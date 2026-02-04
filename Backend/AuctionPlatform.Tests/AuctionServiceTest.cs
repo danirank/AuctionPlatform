@@ -82,6 +82,7 @@ namespace AuctionPlatform.Tests
     public class CreateAuctionResponeDto
     {
         public int AuctionId { get; set; }
+
         public string? UserId { get; set; }
     }
 
