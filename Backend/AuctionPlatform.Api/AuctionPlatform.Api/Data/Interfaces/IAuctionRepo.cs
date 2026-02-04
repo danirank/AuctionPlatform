@@ -12,7 +12,7 @@ namespace AuctionPlatform.Api.Data.Interfaces
         //Hjälpmetoder för update -sker i servicelagret 
         Task<Auction?> FindByIdAsync(int auctionId);
 
-        Task<bool> SaveChangesAsync(Auction auction);
+        Task<bool> SaveChangesAsync();
 
     }
 }

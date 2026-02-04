@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/AuctionPlatform.Api/">
+    <Project Path="AuctionPlatform.Api/AuctionPlatform.Api/AuctionPlatform.Api.csproj" />
+  </Folder>
+  <Project Path="AuctionPlatform.Tests/AuctionPlatform.Tests.csproj" Id="de589ff3-d194-42fb-ab58-b0f632b05fd8" />
+</Solution>

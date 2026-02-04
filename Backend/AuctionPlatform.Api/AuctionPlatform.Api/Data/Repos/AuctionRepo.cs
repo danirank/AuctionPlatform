@@ -47,7 +47,7 @@ namespace AuctionPlatform.Api.Data.Repos
 
             return await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
         }
-        public async Task<bool> SaveChangesAsync(Auction auction)
+        public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0 ? true : false;
         }

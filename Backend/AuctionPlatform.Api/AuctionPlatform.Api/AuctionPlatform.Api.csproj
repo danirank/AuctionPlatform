@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\" />
+    <Folder Include="Core\Interfaces\" />
     <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
