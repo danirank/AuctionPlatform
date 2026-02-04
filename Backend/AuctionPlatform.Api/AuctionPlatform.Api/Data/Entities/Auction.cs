@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuctionPlatform.Api.Data.Entities
 {
@@ -8,8 +9,14 @@ namespace AuctionPlatform.Api.Data.Entities
         public int AuctionId { get; set; }
         [Required]
         public string Title { get; set; } = string.Empty;
+
         [Required]
         public string Description { get; set; } = string.Empty;
+
+        [Required]
+        [Precision(18, 2)]
+        [Range(0.01, double.MaxValue)]
+        public decimal StartPrice { get; set; }
 
         public string? ImageUrl { get; set; }
 

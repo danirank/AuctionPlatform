@@ -11,24 +11,28 @@ namespace AuctionPlatform.Tests
     public class AuctionServiceTest
     {
 
-        private readonly Mock<IAuctionRepo> _mockRepo = new();
+        private readonly Mock<IAuctionRepo> _auctionRepoMock = new();
+        private readonly Mock<IBidRepo> _bidRepoMock = new();
+
         private readonly AuctionService _sut;
 
         public AuctionServiceTest()
         {
-
-            _sut = new AuctionService(_mockRepo.Object);
+            _sut = new AuctionService(
+                _auctionRepoMock.Object,
+                _bidRepoMock.Object
+            );
         }
 
         [Fact]
-        public async Task CreatedAsync_Should_Return_Succes_And_ResponeDto_When_Succes()
+        public async Task AddAsync_Should_Return_Succes_And_ResponeDto_When_Succes()
         {
             //Arrange 
             var dto = new CreateAuctionDto { Title = "testTitle" };
             var userId = "user1";
 
 
-            _mockRepo.Setup(r =>
+            _auctionRepoMock.Setup(r =>
             r.AddAsync(It.IsAny<Auction>()))
                 .ReturnsAsync(new Auction { AuctionId = 1, UserId = "user1" });
 
@@ -46,19 +50,19 @@ namespace AuctionPlatform.Tests
 
 
 
-            _mockRepo.Verify(r => r.AddAsync(It.IsAny<Auction>()), Times.Once);
+            _auctionRepoMock.Verify(r => r.AddAsync(It.IsAny<Auction>()), Times.Once);
 
 
         }
 
         [Fact]
-        public async Task CreateAsync_Should_Return_ErrorMessage_When_Fail()
+        public async Task AddAsync_Should_Return_ErrorMessage_When_Fail()
         {
             //Arrange 
             var dto = new CreateAuctionDto();
             var userId = "";
 
-            _mockRepo.Setup(r =>
+            _auctionRepoMock.Setup(r =>
             r.AddAsync(It.IsAny<Auction>()))
                 .ReturnsAsync((Auction?)null);
 
@@ -72,11 +76,169 @@ namespace AuctionPlatform.Tests
             Assert.Equal(result.Error, ErrorMessages.AddEntityFailed);
             Assert.False(result.IsSucces);
 
-            _mockRepo.Verify(r => r.AddAsync(It.IsAny<Auction>()), Times.Once);
+            _auctionRepoMock.Verify(r => r.AddAsync(It.IsAny<Auction>()), Times.Once);
+
+        }
+
+        [Fact]
+        public async Task UpdateAsync_Should_Return_ErrorMessage_When_TryChangePrice_And_BidExists()
+        {
+            var dto = new UpdateAuctionDto
+            {
+                Title = "UpdatedTitle",
+                Description = "UpdatedDescription",
+                ImageUrl = "image",
+                newEndDateUtc = DateTime.UtcNow.AddDays(20),
+                StartPrice = 100
+
+            };
+
+            var bids = new List<Bid>
+            {
+                new Bid
+                {
+                    AuctionId = 1,
+                    UserId = "user2",
+                    BidAmount = 50,
+                    BidTimeUtc = DateTime.UtcNow
+                }
+            };
+
+            _bidRepoMock.Setup(r => r.BidsByAuctionId(It.IsAny<int>())).ReturnsAsync(bids);
+
+            _auctionRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>())).ReturnsAsync(new Auction
+            {
+                AuctionId = 1,
+                UserId = "user1",
+                Title = "OrgTitle",
+                Description = "orgDesc",
+                StartPrice = 20,
+                StartAtUtc = DateTime.UtcNow,
+                EndAtUtc = DateTime.UtcNow.AddDays(5),
+                ImageUrl = null,
+                IsOpen = true,
+                Bids = bids
+
+            });
+
+
+            //Act 
+            var result = await _sut.UpdateAsync(dto, 1);
+
+            //Assert 
+
+            result.IsSucces.Should().BeFalse();
+            result.Error.Should().Be(ErrorMessages.BidExistsOnPriceUpdate);
+
+
+        }
+
+        [Fact]
+        public async Task UpdateAsync_Should_Return_UpdateResponseDto_When_Succes()
+        {
+            var dto = new UpdateAuctionDto
+            {
+                Title = "UpdatedTitle",
+                Description = "UpdatedDescription",
+                ImageUrl = "image",
+                newEndDateUtc = DateTime.UtcNow.AddDays(20),
+                StartPrice = 100
+
+            };
+
+            var bids = new List<Bid>
+            {
+            };
+
+            _bidRepoMock.Setup(r => r.BidsByAuctionId(It.IsAny<int>())).ReturnsAsync(bids);
+
+            _auctionRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>())).ReturnsAsync(new Auction
+            {
+                AuctionId = 1,
+                UserId = "user1",
+                Title = "OrgTitle",
+                Description = "orgDesc",
+                StartPrice = 20,
+                StartAtUtc = DateTime.UtcNow,
+                EndAtUtc = DateTime.UtcNow.AddDays(5),
+                ImageUrl = null,
+                IsOpen = true,
+                Bids = bids
+
+            });
+
+            _auctionRepoMock.Setup(r => r.SaveChangesAsync()).ReturnsAsync(true);
+
+            //Act 
+            var result = await _sut.UpdateAsync(dto, 1);
+
+            //Assert 
+
+            result.IsSucces.Should().BeTrue();
+            result.Data?.Title.Should().Be("UpdatedTitle");
+
+
+        }
+
+        [Fact]
+        public async Task UpdateAync_Should_Return_NoteFoundMessage_When_Entity_notFound()
+        {
+            var dto = new UpdateAuctionDto
+            {
+                Title = "UpdatedTitle",
+                Description = "UpdatedDescription",
+                ImageUrl = "image",
+                newEndDateUtc = DateTime.UtcNow.AddDays(20),
+                StartPrice = 100
+
+            };
+            _auctionRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>())).ReturnsAsync((Auction?)null);
+
+            var result = await _sut.UpdateAsync(dto, 1);
+
+            result.IsSucces.Should().BeFalse();
+            result.Error.Should().Be(ErrorMessages.EntityWithIdNotFound);
+
+        }
+
+        [Fact]
+        public async Task UpdateAync_Should_Return_FailedSave_When_Entity_NotSaved()
+        {
+            var dto = new UpdateAuctionDto
+            {
+                Title = "UpdatedTitle",
+                Description = "UpdatedDescription",
+                ImageUrl = "image",
+                newEndDateUtc = DateTime.UtcNow.AddDays(20),
+                StartPrice = 100
+
+            };
+
+            _auctionRepoMock
+                .Setup(r => r.FindByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Auction { AuctionId = 1 });
+
+
+            _auctionRepoMock.Setup(r => r.SaveChangesAsync()).ReturnsAsync(false);
+
+            var result = await _sut.UpdateAsync(dto, 1);
+
+            result.IsSucces.Should().BeFalse();
+            result.Error.Should().Be(ErrorMessages.FailSaveAsync);
 
         }
 
 
+    }
+
+    public class UpdateAuctionDto
+    {
+        [StringLength(50, MinimumLength = 2)]
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
+        public decimal StartPrice { get; set; }
+        public DateTime newEndDateUtc { get; set; }
     }
 
     public class CreateAuctionResponeDto
@@ -129,16 +291,31 @@ namespace AuctionPlatform.Tests
     public interface IAuctionService
     {
         Task<Result<CreateAuctionResponeDto?>> AddAsync(CreateAuctionDto dto, string userId);
+        Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId);
+
     }
 
+    public class UpdateAuctionResponseDto
+    {
+        public string? Title { get; set; }
+        public string? Description { get; set; }
+
+        public decimal StartPrice { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+
+    }
 
     public class AuctionService : IAuctionService
     {
         private readonly IAuctionRepo _repo;
+        private readonly IBidRepo _bidRepo;
 
-        public AuctionService(IAuctionRepo repo)
+        public AuctionService(IAuctionRepo repo, IBidRepo bidRepo)
         {
             _repo = repo;
+            _bidRepo = bidRepo;
         }
 
         public async Task<Result<CreateAuctionResponeDto?>> AddAsync(CreateAuctionDto dto, string userId)
@@ -172,7 +349,42 @@ namespace AuctionPlatform.Tests
 
         }
 
+        public async Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId)
+        {
+            var bids = await _bidRepo.BidsByAuctionId(auctionId) ?? new List<Bid>();
 
+            if (bids.Any())
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.BidExistsOnPriceUpdate);
+
+            var entity = await _repo.FindByIdAsync(auctionId);
+
+            if (entity is null)
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            entity.Title = dto.Title;
+            entity.Description = dto.Description;
+            entity.StartPrice = dto.StartPrice;
+            entity.EndAtUtc = dto.newEndDateUtc;
+            entity.ImageUrl = dto.ImageUrl;
+
+            var succes = await _repo.SaveChangesAsync();
+
+            if (!succes)
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.FailSaveAsync);
+
+            var responseDto = new UpdateAuctionResponseDto
+            {
+                Title = entity.Title,
+                Description = entity.Description,
+                StartPrice = entity.StartPrice,
+                ImageUrl = entity.ImageUrl,
+
+            };
+
+
+            return Result<UpdateAuctionResponseDto>.Ok(responseDto);
+
+        }
     }
 }
 
