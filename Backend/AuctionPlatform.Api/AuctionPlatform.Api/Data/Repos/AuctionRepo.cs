@@ -36,6 +36,8 @@ namespace AuctionPlatform.Api.Data.Repos
         }
 
 
+
+
         public async Task<List<Auction>> GetAllByUserAsync(string userId)
         {
             return await _context.Auctions.Where(a => a.UserId == userId).ToListAsync();
@@ -50,6 +52,11 @@ namespace AuctionPlatform.Api.Data.Repos
         public async Task<bool> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync() > 0 ? true : false;
+        }
+
+        public async Task<List<Auction>> GetAllOpenAsync()
+        {
+            return await _context.Auctions.Where(a => a.IsOpen == true).ToListAsync();
         }
     }
 }

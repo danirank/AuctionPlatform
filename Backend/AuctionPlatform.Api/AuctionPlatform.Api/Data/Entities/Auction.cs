@@ -25,7 +25,7 @@ namespace AuctionPlatform.Api.Data.Entities
         [Required]
         public DateTime EndAtUtc { get; set; }
 
-        public bool IsOpen { get; set; }
+        public bool IsOpen => DateTime.UtcNow < EndAtUtc;
 
         public string UserId { get; set; } = string.Empty;
         public AppUser? User { get; set; }

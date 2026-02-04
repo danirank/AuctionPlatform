@@ -116,7 +116,6 @@ namespace AuctionPlatform.Tests
                 StartAtUtc = DateTime.UtcNow,
                 EndAtUtc = DateTime.UtcNow.AddDays(5),
                 ImageUrl = null,
-                IsOpen = true,
                 Bids = bids
 
             });
@@ -162,7 +161,7 @@ namespace AuctionPlatform.Tests
                 StartAtUtc = DateTime.UtcNow,
                 EndAtUtc = DateTime.UtcNow.AddDays(5),
                 ImageUrl = null,
-                IsOpen = true,
+
                 Bids = bids
 
             });
@@ -228,24 +227,86 @@ namespace AuctionPlatform.Tests
 
         }
 
+        [Fact]
+        public async Task GetAllAsync_ShouldReturn_Succes_true_And_ListOfAuctions()
+        {
+            //Jag vill testa om jag får tillbaka en lista. Mocka listan från repo. 
+
+            var list = new List<Auction>
+            {
+                new Auction {AuctionId = 1, EndAtUtc = DateTime.Now.AddDays(5), Title = "Test1"},
+                new Auction {AuctionId = 2, EndAtUtc = DateTime.Now.AddDays(3), Title = "Test2"},
+                new Auction {AuctionId = 3, EndAtUtc = DateTime.Now.AddDays(1), Title = "Test3"},
+                new Auction {AuctionId = 4, EndAtUtc = DateTime.MinValue, Title = "Test4"},
+
+            };
+
+
+            _auctionRepoMock.Setup(r => r.GetAllAsync(string.Empty)).ReturnsAsync(list);
+
+            var result = await _sut.GetAllAsync("");
+
+
+            result.IsSucces.Should().BeTrue();
+            result.Data?.Count.Should().Be(4);
+
+        }
+        [Fact]
+        public async Task GetAllAsync_ShouldReturn_OpenAuctions()
+        {
+
+
+            var list = new List<Auction>
+            {
+                new Auction {AuctionId = 1, EndAtUtc = DateTime.Now.AddDays(5), Title = "Test1"},
+                new Auction {AuctionId = 2, EndAtUtc = DateTime.Now.AddDays(3), Title = "Test2"},
+                new Auction {AuctionId = 3, EndAtUtc = DateTime.Now.AddDays(1), Title = "Test3"},
+                new Auction {AuctionId = 4, EndAtUtc = DateTime.MinValue, Title = "Test4"},
+
+            };
+
+
+            _auctionRepoMock.Setup(r => r.GetAllOpenAsync()).ReturnsAsync(list.Where(a => a.IsOpen == true).ToList());
+
+            var result = await _sut.GetAllOpenAsync();
+
+
+            result.IsSucces.Should().BeTrue();
+            result.Data?.Count.Should().Be(3);
+
+        }
 
     }
 
     public class UpdateAuctionDto
     {
         [StringLength(50, MinimumLength = 2)]
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Title { get; set; }
+        public string? Description { get; set; }
         public string? ImageUrl { get; set; }
-        public decimal StartPrice { get; set; }
-        public DateTime newEndDateUtc { get; set; }
+        public decimal? StartPrice { get; set; }
+        public DateTime? newEndDateUtc { get; set; }
     }
+    public class UpdateAuctionResponseDto
+    {
+        public string? Title { get; set; }
+        public string? Description { get; set; }
 
+        public bool IsOpen { get; set; }
+
+        public decimal StartPrice { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+
+    }
     public class CreateAuctionResponeDto
     {
         public int AuctionId { get; set; }
 
         public string? UserId { get; set; }
+
+        public bool IsOpen { get; set; }
     }
 
     public class Result<T>
@@ -265,6 +326,9 @@ namespace AuctionPlatform.Tests
                 Data = data
             };
         }
+
+
+
 
         public static Result<T> Fail(string error)
         {
@@ -286,6 +350,8 @@ namespace AuctionPlatform.Tests
 
         public DateTime EndAtUtc { get; set; } = DateTime.Now.AddDays(7);
 
+
+
     }
 
     public interface IAuctionService
@@ -293,16 +359,25 @@ namespace AuctionPlatform.Tests
         Task<Result<CreateAuctionResponeDto?>> AddAsync(CreateAuctionDto dto, string userId);
         Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId);
 
+        Task<Result<List<AuctionsGetResponseDto>>> GetAllAsync(string search);
+        Task<Result<List<AuctionsGetResponseDto>>> GetAllOpenAsync();
+
+
     }
 
-    public class UpdateAuctionResponseDto
+    public class AuctionsGetResponseDto
     {
+        public int Id { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
 
-        public decimal StartPrice { get; set; }
-
         public string? ImageUrl { get; set; }
+
+        public bool IsOpen { get; set; }
+
+        public DateTime StartDateUtc { get; set; }
+        public DateTime EndDateUtc { get; set; }
+
 
 
     }
@@ -327,7 +402,7 @@ namespace AuctionPlatform.Tests
                 Description = dto.Description,
                 StartAtUtc = dto.StartAtUtc,
                 EndAtUtc = dto.EndAtUtc,
-                UserId = userId
+                UserId = userId,
 
             };
 
@@ -342,12 +417,48 @@ namespace AuctionPlatform.Tests
             var responeDto = new CreateAuctionResponeDto
             {
                 AuctionId = result.AuctionId,
-                UserId = result.UserId
+                UserId = result.UserId,
+                IsOpen = result.IsOpen
             };
 
             return Result<CreateAuctionResponeDto?>.Ok(responeDto);
 
         }
+
+        public async Task<Result<List<AuctionsGetResponseDto>>> GetAllAsync(string search)
+        {
+            var result = await _repo.GetAllAsync("");
+
+            var dto = result.Select(a => new AuctionsGetResponseDto
+            {
+                Id = a.AuctionId,
+                Title = a.Title,
+                Description = a.Description,
+                IsOpen = a.IsOpen,
+                ImageUrl = a.ImageUrl ?? string.Empty
+
+            }).ToList();
+
+            return Result<List<AuctionsGetResponseDto>>.Ok(dto);
+        }
+
+        public async Task<Result<List<AuctionsGetResponseDto>>> GetAllOpenAsync()
+        {
+            var result = await _repo.GetAllOpenAsync();
+
+            var dto = result.Select(a => new AuctionsGetResponseDto
+            {
+                Id = a.AuctionId,
+                Title = a.Title,
+                Description = a.Description,
+                IsOpen = a.IsOpen,
+                ImageUrl = a.ImageUrl ?? string.Empty
+
+            }).ToList();
+
+            return Result<List<AuctionsGetResponseDto>>.Ok(dto);
+        }
+
 
         public async Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId)
         {
@@ -361,11 +472,11 @@ namespace AuctionPlatform.Tests
             if (entity is null)
                 return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
 
-            entity.Title = dto.Title;
-            entity.Description = dto.Description;
-            entity.StartPrice = dto.StartPrice;
-            entity.EndAtUtc = dto.newEndDateUtc;
-            entity.ImageUrl = dto.ImageUrl;
+            entity.Title = dto.Title ?? entity.Title;
+            entity.Description = dto.Description ?? entity.Description;
+            entity.StartPrice = dto.StartPrice ?? entity.StartPrice;
+            entity.EndAtUtc = dto.newEndDateUtc ?? entity.EndAtUtc;
+            entity.ImageUrl = dto.ImageUrl ?? entity.ImageUrl;
 
             var succes = await _repo.SaveChangesAsync();
 
@@ -378,6 +489,7 @@ namespace AuctionPlatform.Tests
                 Description = entity.Description,
                 StartPrice = entity.StartPrice,
                 ImageUrl = entity.ImageUrl,
+                IsOpen = entity.IsOpen
 
             };
 

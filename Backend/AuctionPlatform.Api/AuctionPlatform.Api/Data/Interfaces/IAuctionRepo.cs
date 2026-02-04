@@ -9,6 +9,8 @@ namespace AuctionPlatform.Api.Data.Interfaces
 
         Task<List<Auction>> GetAllByUserAsync(string userId);
 
+        Task<List<Auction>> GetAllOpenAsync();
+
         //Hjälpmetoder för update -sker i servicelagret 
         Task<Auction?> FindByIdAsync(int auctionId);
 
