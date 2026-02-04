@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuctionPlatform.Api.Data.Repos
 {
+
     public class AuctionRepo : IAuctionRepo
     {
         private readonly AppDbContext _context;
@@ -12,6 +13,15 @@ namespace AuctionPlatform.Api.Data.Repos
         {
             _context = context;
         }
+
+        public async Task<Auction?> AddAsync(Auction auction)
+        {
+            var result = await _context.Auctions.AddAsync(auction);
+            await _context.SaveChangesAsync();
+
+            return result.Entity;
+        }
+
 
         public async Task<List<Auction>> GetAllAsync(string? titleSearch)
         {
@@ -29,6 +39,17 @@ namespace AuctionPlatform.Api.Data.Repos
         public async Task<List<Auction>> GetAllByUserAsync(string userId)
         {
             return await _context.Auctions.Where(a => a.UserId == userId).ToListAsync();
+        }
+
+        //Update helpers 
+        public async Task<Auction?> FindByIdAsync(int auctionId)
+        {
+
+            return await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
+        }
+        public async Task<bool> SaveChangesAsync(Auction auction)
+        {
+            return await _context.SaveChangesAsync() > 0 ? true : false;
         }
     }
 }
