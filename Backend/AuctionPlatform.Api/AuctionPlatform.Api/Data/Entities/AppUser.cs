@@ -19,5 +19,7 @@ namespace AuctionPlatform.Api.Data.Entities
         public List<Auction> Auctions { get; set; } = new();
 
 
+
+
     }
 }
