@@ -23,16 +23,22 @@ namespace AuctionPlatform.Api.Data.Repos
         }
 
 
-        public async Task<List<Auction>> GetAllAsync(string? titleSearch)
+        public async Task<List<Auction>> GetAllAsync(string titleSearch)
         {
             IQueryable<Auction> query = _context.Auctions;
 
             if (!string.IsNullOrWhiteSpace(titleSearch))
             {
-                query = query.Where(a => a.Title.Contains(titleSearch));
+                query = query.Where(a => a.Title.ToLower().Contains(titleSearch.ToLower()));
             }
 
-            return await query.ToListAsync();
+            return await query.ToListAsync() ?? new List<Auction>();
+        }
+
+        public async Task<List<Auction>> GetAllAsync()
+        {
+
+            return await _context.Auctions.ToListAsync();
         }
 
 

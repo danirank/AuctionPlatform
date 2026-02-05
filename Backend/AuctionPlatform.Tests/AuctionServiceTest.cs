@@ -1,10 +1,11 @@
-﻿using AuctionPlatform.Api.Data.Constants;
+﻿using AuctionPlatform.Api.Core.Services;
+using AuctionPlatform.Api.Data.Constants;
+using AuctionPlatform.Api.Data.DTO;
 using AuctionPlatform.Api.Data.Entities;
 using AuctionPlatform.Api.Data.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
 using Moq;
-using System.ComponentModel.DataAnnotations;
 
 namespace AuctionPlatform.Tests
 {
@@ -242,9 +243,9 @@ namespace AuctionPlatform.Tests
             };
 
 
-            _auctionRepoMock.Setup(r => r.GetAllAsync(string.Empty)).ReturnsAsync(list);
+            _auctionRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(list);
 
-            var result = await _sut.GetAllAsync("");
+            var result = await _sut.GetAllAsync();
 
 
             result.IsSucces.Should().BeTrue();
@@ -276,227 +277,33 @@ namespace AuctionPlatform.Tests
 
         }
 
-    }
-
-    public class UpdateAuctionDto
-    {
-        [StringLength(50, MinimumLength = 2)]
-        public string? Title { get; set; }
-        public string? Description { get; set; }
-        public string? ImageUrl { get; set; }
-        public decimal? StartPrice { get; set; }
-        public DateTime? newEndDateUtc { get; set; }
-    }
-    public class UpdateAuctionResponseDto
-    {
-        public string? Title { get; set; }
-        public string? Description { get; set; }
-
-        public bool IsOpen { get; set; }
-
-        public decimal StartPrice { get; set; }
-
-        public string? ImageUrl { get; set; }
-
-
-    }
-    public class CreateAuctionResponeDto
-    {
-        public int AuctionId { get; set; }
-
-        public string? UserId { get; set; }
-
-        public bool IsOpen { get; set; }
-    }
-
-    public class Result<T>
-    {
-        public bool IsSucces { get; private set; }
-
-        public string? Error { get; private set; }
-        public T? Data { get; private set; }
-
-        private Result() { }
-
-        public static Result<T> Ok(T data)
+        [Fact]
+        public async Task GetAllAsync_ShouldReturn_SearchedAuctions()
         {
-            return new Result<T>
+
+
+            var list = new List<Auction>
             {
-                IsSucces = true,
-                Data = data
-            };
-        }
-
-
-
-
-        public static Result<T> Fail(string error)
-        {
-            return new Result<T>
-            {
-                IsSucces = false,
-                Error = error
-            };
-        }
-    }
-
-    public class CreateAuctionDto
-    {
-        [StringLength(50, MinimumLength = 2)]
-        public string Title { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-
-        public DateTime StartAtUtc { get; set; } = DateTime.Now;
-
-        public DateTime EndAtUtc { get; set; } = DateTime.Now.AddDays(7);
-
-
-
-    }
-
-    public interface IAuctionService
-    {
-        Task<Result<CreateAuctionResponeDto?>> AddAsync(CreateAuctionDto dto, string userId);
-        Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId);
-
-        Task<Result<List<AuctionsGetResponseDto>>> GetAllAsync(string search);
-        Task<Result<List<AuctionsGetResponseDto>>> GetAllOpenAsync();
-
-
-    }
-
-    public class AuctionsGetResponseDto
-    {
-        public int Id { get; set; }
-        public string? Title { get; set; }
-        public string? Description { get; set; }
-
-        public string? ImageUrl { get; set; }
-
-        public bool IsOpen { get; set; }
-
-        public DateTime StartDateUtc { get; set; }
-        public DateTime EndDateUtc { get; set; }
-
-
-
-    }
-
-    public class AuctionService : IAuctionService
-    {
-        private readonly IAuctionRepo _repo;
-        private readonly IBidRepo _bidRepo;
-
-        public AuctionService(IAuctionRepo repo, IBidRepo bidRepo)
-        {
-            _repo = repo;
-            _bidRepo = bidRepo;
-        }
-
-        public async Task<Result<CreateAuctionResponeDto?>> AddAsync(CreateAuctionDto dto, string userId)
-        {
-            var entity = new Auction
-            {
-
-                Title = dto.Title,
-                Description = dto.Description,
-                StartAtUtc = dto.StartAtUtc,
-                EndAtUtc = dto.EndAtUtc,
-                UserId = userId,
+                new Auction {AuctionId = 1, EndAtUtc = DateTime.Now.AddDays(5), Title = "Test1"},
+                new Auction {AuctionId = 2, EndAtUtc = DateTime.Now.AddDays(3), Title = "Test2"},
+                new Auction {AuctionId = 3, EndAtUtc = DateTime.Now.AddDays(1), Title = "Test3"},
+                new Auction {AuctionId = 4, EndAtUtc = DateTime.MinValue, Title = "Test4"},
 
             };
 
-            var result = await _repo.AddAsync(entity);
+            string searchTitle = "te";
 
 
+            _auctionRepoMock.Setup(r => r.GetAllAsync(searchTitle))
+                .ReturnsAsync(list.Where(a => a.Title.ToLower().Contains(searchTitle.ToLower())).ToList());
 
-            if (result is null)
-                return Result<CreateAuctionResponeDto?>.Fail(ErrorMessages.AddEntityFailed);
+            var result = await _sut.GetAllAsync(searchTitle);
 
 
-            var responeDto = new CreateAuctionResponeDto
-            {
-                AuctionId = result.AuctionId,
-                UserId = result.UserId,
-                IsOpen = result.IsOpen
-            };
-
-            return Result<CreateAuctionResponeDto?>.Ok(responeDto);
+            result.IsSucces.Should().BeTrue();
+            result.Data?.Count.Should().Be(4);
 
         }
 
-        public async Task<Result<List<AuctionsGetResponseDto>>> GetAllAsync(string search)
-        {
-            var result = await _repo.GetAllAsync("");
-
-            var dto = result.Select(a => new AuctionsGetResponseDto
-            {
-                Id = a.AuctionId,
-                Title = a.Title,
-                Description = a.Description,
-                IsOpen = a.IsOpen,
-                ImageUrl = a.ImageUrl ?? string.Empty
-
-            }).ToList();
-
-            return Result<List<AuctionsGetResponseDto>>.Ok(dto);
-        }
-
-        public async Task<Result<List<AuctionsGetResponseDto>>> GetAllOpenAsync()
-        {
-            var result = await _repo.GetAllOpenAsync();
-
-            var dto = result.Select(a => new AuctionsGetResponseDto
-            {
-                Id = a.AuctionId,
-                Title = a.Title,
-                Description = a.Description,
-                IsOpen = a.IsOpen,
-                ImageUrl = a.ImageUrl ?? string.Empty
-
-            }).ToList();
-
-            return Result<List<AuctionsGetResponseDto>>.Ok(dto);
-        }
-
-
-        public async Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId)
-        {
-            var bids = await _bidRepo.BidsByAuctionId(auctionId) ?? new List<Bid>();
-
-            if (bids.Any())
-                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.BidExistsOnPriceUpdate);
-
-            var entity = await _repo.FindByIdAsync(auctionId);
-
-            if (entity is null)
-                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
-
-            entity.Title = dto.Title ?? entity.Title;
-            entity.Description = dto.Description ?? entity.Description;
-            entity.StartPrice = dto.StartPrice ?? entity.StartPrice;
-            entity.EndAtUtc = dto.newEndDateUtc ?? entity.EndAtUtc;
-            entity.ImageUrl = dto.ImageUrl ?? entity.ImageUrl;
-
-            var succes = await _repo.SaveChangesAsync();
-
-            if (!succes)
-                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.FailSaveAsync);
-
-            var responseDto = new UpdateAuctionResponseDto
-            {
-                Title = entity.Title,
-                Description = entity.Description,
-                StartPrice = entity.StartPrice,
-                ImageUrl = entity.ImageUrl,
-                IsOpen = entity.IsOpen
-
-            };
-
-
-            return Result<UpdateAuctionResponseDto>.Ok(responseDto);
-
-        }
     }
 }
-
