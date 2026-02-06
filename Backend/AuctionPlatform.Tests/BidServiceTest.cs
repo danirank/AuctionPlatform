@@ -35,12 +35,13 @@ namespace AuctionPlatform.Tests
 
             var addBidDto = new AddBidDto
             {
+                AuctionId = 2,
                 UserId = "user3",
                 Amount = 3
             };
 
 
-            var result = await _sut.AddBidAsync(2, addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto);
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.EntityWithIdNotFound);
@@ -79,7 +80,7 @@ namespace AuctionPlatform.Tests
             };
 
 
-            var result = await _sut.AddBidAsync(2, addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto);
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.HigherBidExists);
@@ -125,11 +126,12 @@ namespace AuctionPlatform.Tests
 
             var addBidDto = new AddBidDto
             {
+                AuctionId = 1,
                 UserId = "user3",
                 Amount = bid
             };
 
-            var result = await _sut.AddBidAsync(1, addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto);
 
             result.IsSucces.Should().BeTrue();
             result.Data.Should().NotBeNull();
@@ -146,11 +148,12 @@ namespace AuctionPlatform.Tests
 
             var addBidDto = new AddBidDto
             {
+                AuctionId = 1,
                 UserId = "user1",
                 Amount = 20
             };
 
-            var result = await _sut.AddBidAsync(1, addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto);
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.BidOnOwnAuction);
@@ -179,12 +182,64 @@ namespace AuctionPlatform.Tests
 
             var result = await _sut.DeleteAsync(deleteDto);
 
+            result.IsSucces.Should().BeFalse();
+            result.Error.Should().Be(ErrorMessages.DeleteBidThatIsNotUsers);
+
+
+        }
+
+        [Fact]
+        public async Task DeleteBid_ShouldReturn_ErrorMessage_BidDoesntExist()
+        {
+            _bidRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync((Bid?)null);
+
+            var deleteDto = new DeleteBidDto
+            {
+                UserId = "user2",
+                BidId = 1,
+            };
+
+
+            var result = await _sut.DeleteAsync(deleteDto);
+
+            result.IsSucces.Should().BeFalse();
+            result.Error.Should().Be(ErrorMessages.EntityWithIdNotFound);
+
+        }
+
+        [Fact]
+        public async Task DeleteBid_ShouldReturnTrueAndSuccesMessage()
+        {
+
+            _bidRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Bid
+                {
+                    Id = 1,
+                    AuctionId = 1,
+                    UserId = "user1",
+                    BidAmount = 20
+                });
+
+            var deleteDto = new DeleteBidDto
+            {
+                UserId = "user1",
+                BidId = 1,
+            };
+
+
+            var result = await _sut.DeleteAsync(deleteDto);
+
+            result.IsSucces.Should().BeTrue();
+            result.Data?.Message.Should().Be(ResponseMessages.DeleteSucces);
+
+
         }
 
     }
     public interface IBidService
     {
-        Task<Result<AddBidResponseDto>> AddBidAsync(int auctionId, AddBidDto dto);
+        Task<Result<AddBidResponseDto>> AddBidAsync(AddBidDto dto);
         Task<Result<DeleteBidResponseDto>> DeleteAsync(DeleteBidDto dto);
     }
 
@@ -208,6 +263,7 @@ namespace AuctionPlatform.Tests
 
     public class AddBidDto
     {
+        public int AuctionId { get; set; }
         public int Amount { get; set; }
         public string? UserId { get; set; }
 
@@ -223,9 +279,9 @@ namespace AuctionPlatform.Tests
             _auctionRepo = auctionRepo;
         }
 
-        public async Task<Result<AddBidResponseDto>> AddBidAsync(int auctionId, AddBidDto dto)
+        public async Task<Result<AddBidResponseDto>> AddBidAsync(AddBidDto dto)
         {
-            var auctionExists = await _auctionRepo.FindByIdAsync(auctionId);
+            var auctionExists = await _auctionRepo.FindByIdAsync(dto.AuctionId);
             if (auctionExists is null)
                 return Result<AddBidResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
 
@@ -233,7 +289,7 @@ namespace AuctionPlatform.Tests
                 return Result<AddBidResponseDto>.Fail(ErrorMessages.BidOnOwnAuction);
 
 
-            var highestBid = await _bidRepo.HighestBidByAuctionId(auctionId);
+            var highestBid = await _bidRepo.HighestBidByAuctionId(dto.AuctionId);
 
 
 
@@ -244,7 +300,7 @@ namespace AuctionPlatform.Tests
             {
                 BidAmount = dto.Amount,
                 UserId = dto.UserId,
-                AuctionId = auctionId,
+                AuctionId = dto.AuctionId
 
             };
 
@@ -264,8 +320,7 @@ namespace AuctionPlatform.Tests
 
         }
 
-        public async Task<Result<DeleteBidResponseDto>> DeleteAsync(DeleteBidDto dto
-            )
+        public async Task<Result<DeleteBidResponseDto>> DeleteAsync(DeleteBidDto dto)
         {
             var bidEntity = await _bidRepo.FindByIdAsync(dto.BidId);
 
