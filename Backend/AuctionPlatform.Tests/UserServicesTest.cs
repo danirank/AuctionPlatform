@@ -1,5 +1,6 @@
 ﻿using AuctionPlatform.Api.Core.Services;
 using AuctionPlatform.Api.Data.Constants;
+using AuctionPlatform.Api.Data.DTO;
 using AuctionPlatform.Api.Data.Entities;
 using FluentAssertions;
 using Microsoft.AspNetCore.Identity;
@@ -7,10 +8,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 
@@ -372,37 +371,8 @@ namespace AuctionPlatform.Tests
 
         }
 
-        public class LoginDto
-        {
-            public string UserNameOrEmail { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
 
 
-        }
-
-        public class CreateUserDto
-        {
-            public string? UserName { get; set; }
-            public string? Email { get; set; }
-            public string? Password { get; set; }
-            public string? FirsName { get; set; }
-            public string? LastName { get; set; }
-            public bool IsAdmin { get; set; } = false;
-        }
-
-        public class CreateUserResponseDto
-        {
-            public string? Id { get; set; }
-            public string? UserName { get; set; }
-            public string? Email { get; set; }
-
-            public IEnumerable<string>? Roles { get; set; }
-
-
-
-
-
-        }
         public class TestIdentityDbContext : IdentityDbContext<AppUser>
         {
             public TestIdentityDbContext(DbContextOptions<TestIdentityDbContext> options) : base(options) { }
@@ -454,135 +424,8 @@ namespace AuctionPlatform.Tests
         }
 
 
-        public interface IUserService
-        {
-
-            Task<Result<CreateUserResponseDto>> AddAsync(CreateUserDto dto);
-            Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto);
-
-            Task<string> GenerateToken(AppUser user);
-
-            Task<IEnumerable<string>> GetUserRoles(AppUser user);
-        }
-
-        public class LoginResponseDto
-        {
-            public string? Token { get; set; }
-        }
-
-        public class UserService : IUserService
-        {
-            private readonly UserManager<AppUser> _userManager;
-            private readonly IConfiguration _config;
-            public UserService(UserManager<AppUser> userManager, IConfiguration config)
-            {
-                _userManager = userManager;
-                _config = config;
-            }
-
-            public async Task<Result<CreateUserResponseDto>> AddAsync(CreateUserDto dto)
-            {
-
-                var entity = new AppUser
-                {
-                    UserName = dto.UserName,
-                    Email = dto.Email,
-                    FirstName = dto.FirsName,
-                    LastName = dto.LastName
-                };
-
-                var result = await _userManager.CreateAsync(entity, dto.Password);
-
-                if (!result.Succeeded)
-                    return Result<CreateUserResponseDto>.Fail(ErrorMessages.UserCredentialsMissing);
 
 
-                var addRole = dto.IsAdmin ?
-                    await _userManager.AddToRolesAsync(entity, new List<string> { Roles.Admin, Roles.User })
-                    : await _userManager.AddToRoleAsync(entity, Roles.User);
-                if (!addRole.Succeeded)
-                    return Result<CreateUserResponseDto>.Fail(ErrorMessages.FailedAddingRole);
-                var roles = await _userManager.GetRolesAsync(entity);
-
-                var resDto = new CreateUserResponseDto
-                {
-                    Id = entity.Id,
-                    Email = entity.Email,
-                    UserName = entity.UserName,
-                    Roles = roles
-
-                };
-
-                return Result<CreateUserResponseDto>.Ok(resDto);
-
-
-
-            }
-
-            public async Task<IEnumerable<string>> GetUserRoles(AppUser user)
-            {
-
-                return await _userManager.GetRolesAsync(user);
-            }
-
-            public async Task<string> GenerateToken(AppUser user)
-            {
-
-
-                var claims = new List<Claim>
-                {
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName ?? ""),
-                new Claim(ClaimTypes.Email, user.Email ?? ""),
-
-                };
-
-                var userRoles = await GetUserRoles(user);
-
-                claims.AddRange(
-                    userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-
-                var secretKey = _config["JwtSettings:Key"];
-                var issuer = _config["JwtSettings:Issuer"];
-                var audience = _config["JwtSettings:Audience"];
-
-                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-                var token = new JwtSecurityToken(
-                    issuer: issuer,
-                    audience: audience,
-                    claims: claims,
-                    expires: DateTime.UtcNow.AddHours(1),
-                    signingCredentials: creds
-                );
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-                return tokenString;
-            }
-
-
-            public async Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto)
-            {
-                var userEntity = dto.UserNameOrEmail.Contains("@") ?
-                     await _userManager.FindByEmailAsync(dto.UserNameOrEmail)
-                     : await _userManager.FindByNameAsync(dto.UserNameOrEmail);
-
-                if (userEntity is null)
-                    return Result<LoginResponseDto>.Fail(ErrorMessages.UserNotFound);
-
-                var result = await _userManager.CheckPasswordAsync(userEntity, dto.Password);
-
-                if (!result)
-                    return Result<LoginResponseDto>.Fail(ErrorMessages.WrongPassword);
-
-                var token = await GenerateToken(userEntity);
-
-                var responseDto = new LoginResponseDto { Token = token };
-
-                return Result<LoginResponseDto>.Ok(responseDto);
-            }
-        }
 
     }
 }
