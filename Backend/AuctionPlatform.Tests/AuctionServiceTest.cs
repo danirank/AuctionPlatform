@@ -123,7 +123,7 @@ namespace AuctionPlatform.Tests
 
 
             //Act 
-            var result = await _sut.UpdateAsync(dto, 1);
+            var result = await _sut.UpdateAsync(dto, 1, "user1");
 
             //Assert 
 
@@ -170,7 +170,7 @@ namespace AuctionPlatform.Tests
             _auctionRepoMock.Setup(r => r.SaveChangesAsync()).ReturnsAsync(true);
 
             //Act 
-            var result = await _sut.UpdateAsync(dto, 1);
+            var result = await _sut.UpdateAsync(dto, 1, "user1");
 
             //Assert 
 
@@ -194,7 +194,7 @@ namespace AuctionPlatform.Tests
             };
             _auctionRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>())).ReturnsAsync((Auction?)null);
 
-            var result = await _sut.UpdateAsync(dto, 1);
+            var result = await _sut.UpdateAsync(dto, 1, "user1");
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.EntityWithIdNotFound);
@@ -216,12 +216,12 @@ namespace AuctionPlatform.Tests
 
             _auctionRepoMock
                 .Setup(r => r.FindByIdAsync(It.IsAny<int>()))
-                .ReturnsAsync(new Auction { AuctionId = 1 });
+                .ReturnsAsync(new Auction { AuctionId = 1, UserId = "user1" });
 
 
             _auctionRepoMock.Setup(r => r.SaveChangesAsync()).ReturnsAsync(false);
 
-            var result = await _sut.UpdateAsync(dto, 1);
+            var result = await _sut.UpdateAsync(dto, 1, "user1");
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.FailSaveAsync);

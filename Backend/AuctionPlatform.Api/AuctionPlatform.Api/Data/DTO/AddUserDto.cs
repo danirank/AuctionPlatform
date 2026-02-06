@@ -1,7 +1,7 @@
 ﻿namespace AuctionPlatform.Api.Data.DTO
 {
 
-    public class CreateUserDto
+    public class RegisterUserDto
     {
         public string? UserName { get; set; }
         public string? Email { get; set; }

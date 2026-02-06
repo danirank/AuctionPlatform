@@ -1,5 +1,9 @@
-﻿using AuctionPlatform.Api.Data;
+﻿using AuctionPlatform.Api.Core.Interfaces;
+using AuctionPlatform.Api.Core.Services;
+using AuctionPlatform.Api.Data;
 using AuctionPlatform.Api.Data.Entities;
+using AuctionPlatform.Api.Data.Interfaces;
+using AuctionPlatform.Api.Data.Repos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -42,7 +46,11 @@ namespace BlogPostApi.Extensions
 
         public static IServiceCollection AddScopedServices(this IServiceCollection services)
         {
-
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IBidService, BidService>();
+            services.AddScoped<IAuctionService, AuctionService>();
+            services.AddScoped<IBidRepo, BidRepo>();
+            services.AddScoped<IAuctionRepo, AuctionRepo>();
 
             return services;
         }

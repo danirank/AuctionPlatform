@@ -3,6 +3,7 @@ using AuctionPlatform.Api.Data.Constants;
 using AuctionPlatform.Api.Data.DTO;
 using AuctionPlatform.Api.Data.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,6 +11,7 @@ using System.Text;
 
 namespace AuctionPlatform.Api.Core.Services
 {
+
     public class UserService : IUserService
     {
         private readonly UserManager<AppUser> _userManager;
@@ -20,7 +22,7 @@ namespace AuctionPlatform.Api.Core.Services
             _config = config;
         }
 
-        public async Task<Result<CreateUserResponseDto>> AddAsync(CreateUserDto dto)
+        public async Task<Result<CreateUserResponseDto>> AddAsync(RegisterUserDto dto)
         {
 
             var entity = new AppUser
@@ -28,7 +30,11 @@ namespace AuctionPlatform.Api.Core.Services
                 UserName = dto.UserName,
                 Email = dto.Email,
                 FirstName = dto.FirsName,
-                LastName = dto.LastName
+                LastName = dto.LastName,
+                IsActiveUser = true
+
+
+
             };
 
             var result = await _userManager.CreateAsync(entity, dto.Password);
@@ -50,6 +56,7 @@ namespace AuctionPlatform.Api.Core.Services
                 Email = entity.Email,
                 UserName = entity.UserName,
                 Roles = roles
+
 
             };
 
@@ -121,6 +128,68 @@ namespace AuctionPlatform.Api.Core.Services
             var responseDto = new LoginResponseDto { Token = token };
 
             return Result<LoginResponseDto>.Ok(responseDto);
+        }
+
+        public async Task<AppUser?> GetUserById(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+
+        }
+
+        public async Task<Result<List<GetUsersDto>>> GetAll()
+        {
+            var result = await _userManager.Users.ToListAsync();
+
+            var dto = result.Select(u => new GetUsersDto
+            {
+                UserId = u.Id,
+                UserName = u.UserName,
+                IsActive = u.IsActiveUser
+
+            }).ToList();
+
+            return Result<List<GetUsersDto>>.Ok(dto);
+        }
+
+        public async Task<Result<List<GetUsersDto>>> GetAll(string search)
+        {
+            var result = await _userManager.Users
+                .Where(u => u.UserName.ToLower().Contains(search.ToLower()))
+                .ToListAsync();
+
+            var dto = result.Select(u => new GetUsersDto
+            {
+                UserId = u.Id,
+                UserName = u.UserName,
+                IsActive = u.IsActiveUser
+
+            }).ToList();
+
+            return Result<List<GetUsersDto>>.Ok(dto);
+        }
+
+        public async Task<Result<GetUserDto>> DeActivateUser(UpdateUserDto dto, string userId)
+        {
+            var user = await GetUserById(userId);
+
+            if (user is null)
+                return Result<GetUserDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            user.IsActiveUser = dto.IsActive;
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+                return Result<GetUserDto>.Fail(ErrorMessages.FailSaveAsync);
+
+            var resultDto = new GetUserDto
+            {
+                UserId = user.Id,
+                IsActive = dto.IsActive,
+            };
+
+            return Result<GetUserDto>.Ok(resultDto);
+
         }
     }
 

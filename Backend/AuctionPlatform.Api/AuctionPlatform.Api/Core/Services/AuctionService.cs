@@ -24,6 +24,7 @@ namespace AuctionPlatform.Api.Core.Services
 
                 Title = dto.Title,
                 Description = dto.Description,
+                StartPrice = dto.StartPrice,
                 StartAtUtc = dto.StartAtUtc,
                 EndAtUtc = dto.EndAtUtc,
                 UserId = userId,
@@ -58,8 +59,13 @@ namespace AuctionPlatform.Api.Core.Services
                 Id = a.AuctionId,
                 Title = a.Title,
                 Description = a.Description,
+                StartPrice = a.StartPrice,
                 IsOpen = a.IsOpen,
-                ImageUrl = a.ImageUrl ?? string.Empty
+                ImageUrl = a.ImageUrl ?? string.Empty,
+                StartDateUtc = a.StartAtUtc,
+                EndDateUtc = a.EndAtUtc,
+
+
 
             }).ToList();
 
@@ -74,8 +80,11 @@ namespace AuctionPlatform.Api.Core.Services
                 Id = a.AuctionId,
                 Title = a.Title,
                 Description = a.Description,
+                StartPrice = a.StartPrice,
                 IsOpen = a.IsOpen,
-                ImageUrl = a.ImageUrl ?? string.Empty
+                ImageUrl = a.ImageUrl ?? string.Empty,
+                StartDateUtc = a.StartAtUtc,
+                EndDateUtc = a.EndAtUtc,
 
             }).ToList();
 
@@ -91,25 +100,51 @@ namespace AuctionPlatform.Api.Core.Services
                 Id = a.AuctionId,
                 Title = a.Title,
                 Description = a.Description,
+                StartPrice = a.StartPrice,
                 IsOpen = a.IsOpen,
-                ImageUrl = a.ImageUrl ?? string.Empty
+                ImageUrl = a.ImageUrl ?? string.Empty,
+                StartDateUtc = a.StartAtUtc,
+                EndDateUtc = a.EndAtUtc,
 
             }).ToList();
 
             return Result<List<AuctionsGetResponseDto>>.Ok(dto);
         }
 
-        public async Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId)
+        public async Task<Result<List<AuctionsGetResponseDto>>> GetAllOpenAsync(string search)
+        {
+            var result = await _repo.GetAllOpenAsync(search);
+
+            var dto = result.Select(a => new AuctionsGetResponseDto
+            {
+                Id = a.AuctionId,
+                Title = a.Title,
+                Description = a.Description,
+                StartPrice = a.StartPrice,
+                IsOpen = a.IsOpen,
+                ImageUrl = a.ImageUrl ?? string.Empty,
+                StartDateUtc = a.StartAtUtc,
+                EndDateUtc = a.EndAtUtc,
+
+            }).ToList();
+
+            return Result<List<AuctionsGetResponseDto>>.Ok(dto);
+        }
+
+        public async Task<Result<UpdateAuctionResponseDto>> UpdateAsync(UpdateAuctionDto dto, int auctionId, string userId)
         {
             var bids = await _bidRepo.BidsByAuctionId(auctionId) ?? new List<Bid>();
 
-            if (bids.Any())
+            if (bids.Any() && dto.StartPrice is not null)
                 return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.BidExistsOnPriceUpdate);
 
             var entity = await _repo.FindByIdAsync(auctionId);
 
             if (entity is null)
                 return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            if (entity.UserId != userId)
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.UpdateElsesAuction);
 
             entity.Title = dto.Title ?? entity.Title;
             entity.Description = dto.Description ?? entity.Description;

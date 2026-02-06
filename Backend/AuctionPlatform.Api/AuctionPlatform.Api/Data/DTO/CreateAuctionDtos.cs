@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuctionPlatform.Api.Data.DTO
 {
@@ -17,6 +18,9 @@ namespace AuctionPlatform.Api.Data.DTO
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
 
+        [Precision(18, 2)]
+        [Range(0.01, double.MaxValue)]
+        public decimal StartPrice { get; set; }
         public DateTime StartAtUtc { get; set; } = DateTime.Now;
 
         public DateTime EndAtUtc { get; set; } = DateTime.Now.AddDays(7);

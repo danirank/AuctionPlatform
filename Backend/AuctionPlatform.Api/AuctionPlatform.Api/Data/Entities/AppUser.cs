@@ -12,7 +12,7 @@ namespace AuctionPlatform.Api.Data.Entities
         [Required]
         public string LastName { get; set; } = string.Empty;
 
-        public bool IsActiveUser { get; set; } = true;
+        public bool IsActiveUser { get; set; }
 
         public List<Bid> Bids { get; set; } = new();
 

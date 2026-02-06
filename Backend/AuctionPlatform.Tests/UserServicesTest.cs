@@ -77,7 +77,7 @@ namespace AuctionPlatform.Tests
             var provider = IdentityTestFactory.BuildProvider();
             var userManager = provider.GetRequiredService<UserManager<AppUser>>();
 
-            var createUserdDto = new CreateUserDto
+            var createUserdDto = new RegisterUserDto
             {
                 UserName = null,
                 Email = null,
@@ -107,7 +107,7 @@ namespace AuctionPlatform.Tests
             var provider = IdentityTestFactory.BuildProvider();
             var userManager = provider.GetRequiredService<UserManager<AppUser>>();
 
-            var createUserdDto = new CreateUserDto
+            var createUserdDto = new RegisterUserDto
             {
                 UserName = "Test",
                 Email = "test@mail.com",
@@ -139,7 +139,7 @@ namespace AuctionPlatform.Tests
             var provider = IdentityTestFactory.BuildProvider();
             var userManager = provider.GetRequiredService<UserManager<AppUser>>();
 
-            var createUserdDto = new CreateUserDto
+            var createUserdDto = new RegisterUserDto
             {
                 UserName = "Test",
                 Email = "test@mail.com",
@@ -148,7 +148,7 @@ namespace AuctionPlatform.Tests
                 LastName = "last",
 
             };
-            var createUserdDto2 = new CreateUserDto
+            var createUserdDto2 = new RegisterUserDto
             {
                 UserName = "Test",
                 Email = "test@mail.com",
@@ -192,7 +192,7 @@ namespace AuctionPlatform.Tests
             var config = IdentityTestFactory.CreateTestConfig();
             var _sut = new UserService(userManager, config);
 
-            var createUserdDto = new CreateUserDto
+            var createUserdDto = new RegisterUserDto
             {
                 UserName = null,
                 Email = null,
@@ -222,7 +222,7 @@ namespace AuctionPlatform.Tests
             await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
             await roleamnager.CreateAsync(new IdentityRole(Roles.User));
 
-            var createUserdDto = new CreateUserDto
+            var createUserdDto = new RegisterUserDto
             {
                 UserName = "Test",
                 Email = "Test",
@@ -252,7 +252,7 @@ namespace AuctionPlatform.Tests
             await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
             await roleamnager.CreateAsync(new IdentityRole(Roles.User));
 
-            var dto = new CreateUserDto
+            var dto = new RegisterUserDto
             {
                 UserName = "adim2",
                 Email = "Test2",
@@ -261,7 +261,7 @@ namespace AuctionPlatform.Tests
                 LastName = "Test2",
                 IsAdmin = true
             };
-            var dto2 = new CreateUserDto
+            var dto2 = new RegisterUserDto
             {
                 UserName = "adim1",
                 Email = "Test",
@@ -299,7 +299,7 @@ namespace AuctionPlatform.Tests
             await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
             await roleamnager.CreateAsync(new IdentityRole(Roles.User));
 
-            var dto = new CreateUserDto
+            var dto = new RegisterUserDto
             {
                 UserName = "adim2",
                 Email = "Test2",
@@ -308,7 +308,7 @@ namespace AuctionPlatform.Tests
                 LastName = "Test2",
                 IsAdmin = true
             };
-            var dto2 = new CreateUserDto
+            var dto2 = new RegisterUserDto
             {
                 UserName = "adim1",
                 Email = "Test",
@@ -349,7 +349,7 @@ namespace AuctionPlatform.Tests
             await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
             await roleamnager.CreateAsync(new IdentityRole(Roles.User));
 
-            var dto = new CreateUserDto
+            var dto = new RegisterUserDto
             {
                 UserName = "adim2",
                 Email = "Test2",
@@ -392,7 +392,7 @@ namespace AuctionPlatform.Tests
             await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
             await roleamnager.CreateAsync(new IdentityRole(Roles.User));
 
-            var dto = new CreateUserDto
+            var dto = new RegisterUserDto
             {
                 UserName = "adim2",
                 Email = "Test2",

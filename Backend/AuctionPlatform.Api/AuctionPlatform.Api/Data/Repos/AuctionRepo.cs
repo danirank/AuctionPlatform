@@ -62,7 +62,21 @@ namespace AuctionPlatform.Api.Data.Repos
 
         public async Task<List<Auction>> GetAllOpenAsync()
         {
-            return await _context.Auctions.Where(a => a.IsOpen == true).ToListAsync();
+            var now = DateTime.UtcNow;
+            return await _context.Auctions.Where(a => now < a.EndAtUtc).ToListAsync();
+        }
+        public async Task<List<Auction>> GetAllOpenAsync(string search)
+        {
+            var now = DateTime.UtcNow;
+            IQueryable<Auction> query = _context.Auctions.Where(a => now < a.EndAtUtc);
+
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(a => a.Title.ToLower().Contains(search.ToLower()));
+            }
+
+            return await query.ToListAsync() ?? new List<Auction>();
         }
     }
 }

@@ -13,5 +13,7 @@
         public const string HigherBidExists = "Bid have to be higher than existing";
         public const string BidOnOwnAuction = "You cant bid on your own auction";
         public const string DeleteBidThatIsNotUsers = "Trying to delete someone else bid";
+        public const string Unauthorized = "Unathorized";
+        public const string UpdateElsesAuction = "The post is not yours";
     }
 }
