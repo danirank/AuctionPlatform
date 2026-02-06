@@ -7,6 +7,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 
@@ -229,30 +233,149 @@ namespace AuctionPlatform.Tests
 
         }
 
-        //[Fact]
+        [Fact]
 
-        //public async Task LoginAsync_Generate_Token_Returs_UserWithToken()
-        //{
-        //    var userManager = IdentityTestFactory.CreateUserManager();
-        //    var config = IdentityTestFactory.CreateTestConfig();
-        //    var _sut = new UserService(userManager, config);
-
-        //    var dto = new LoginDto
-        //    {
-        //        UserNameOrEmail = "test",
-        //        Password = "test",
-        //    };
+        public async Task LoginAsync_Generate_Token_Returs_Token()
+        {
+            var provider = IdentityTestFactory.BuildProvider();
+            var userManager = provider.GetRequiredService<UserManager<AppUser>>();
+            var roleamnager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+            var config = IdentityTestFactory.CreateTestConfig();
+            var _sut = new UserService(userManager, config);
 
 
-        //    var result = _sut.LoginAsync(dto); 
 
-        //}
+            await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
+            await roleamnager.CreateAsync(new IdentityRole(Roles.User));
 
+            var dto = new CreateUserDto
+            {
+                UserName = "adim2",
+                Email = "Test2",
+                Password = "test2",
+                FirsName = "Tes2t",
+                LastName = "Test2",
+                IsAdmin = true
+            };
+            var dto2 = new CreateUserDto
+            {
+                UserName = "adim1",
+                Email = "Test",
+                Password = "test",
+                FirsName = "Test",
+                LastName = "Test",
+                IsAdmin = false
+            };
+
+            await _sut.AddAsync(dto);
+
+            var logIndto = new LoginDto
+            {
+                UserNameOrEmail = "adim2",
+                Password = "test2",
+            };
+
+
+            var result = await _sut.LoginAsync(logIndto);
+
+            result.IsSucces.Should().BeTrue();
+            result.Data.Should().NotBeNull();
+            result.Data.Should().BeOfType<LoginResponseDto>();
+
+
+        }
+        [Fact]
+        public async Task LoginAsync_ShouldReturn_UserNotFoundErrorMessage()
+        {
+            var provider = IdentityTestFactory.BuildProvider();
+            var userManager = provider.GetRequiredService<UserManager<AppUser>>();
+            var roleamnager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+            var config = IdentityTestFactory.CreateTestConfig();
+            var _sut = new UserService(userManager, config);
+
+
+
+            await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
+            await roleamnager.CreateAsync(new IdentityRole(Roles.User));
+
+            var dto = new CreateUserDto
+            {
+                UserName = "adim2",
+                Email = "Test2",
+                Password = "test2",
+                FirsName = "Tes2t",
+                LastName = "Test2",
+                IsAdmin = true
+            };
+
+
+            await _sut.AddAsync(dto);
+
+            var logIndto = new LoginDto
+            {
+                UserNameOrEmail = "adiasdm2",
+                Password = "test2",
+            };
+
+
+            var result = await _sut.LoginAsync(logIndto);
+
+            result.IsSucces.Should().BeFalse();
+            result.Error.Should().Be(ErrorMessages.UserNotFound);
+            result.Data.Should().BeNull();
+
+
+        }
+
+        [Fact]
+        public async Task LoginAsync_ShouldReturn_RolesFromToken()
+        {
+            var provider = IdentityTestFactory.BuildProvider();
+            var userManager = provider.GetRequiredService<UserManager<AppUser>>();
+            var roleamnager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+            var config = IdentityTestFactory.CreateTestConfig();
+            var _sut = new UserService(userManager, config);
+
+
+
+            await roleamnager.CreateAsync(new IdentityRole(Roles.Admin));
+            await roleamnager.CreateAsync(new IdentityRole(Roles.User));
+
+            var dto = new CreateUserDto
+            {
+                UserName = "adim2",
+                Email = "Test2",
+                Password = "test2",
+                FirsName = "Tes2t",
+                LastName = "Test2",
+                IsAdmin = true
+            };
+
+
+            await _sut.AddAsync(dto);
+
+            var logIndto = new LoginDto
+            {
+                UserNameOrEmail = "adim2",
+                Password = "test2",
+            };
+
+
+            var result = await _sut.LoginAsync(logIndto);
+
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(result.Data?.Token);
+
+            jwt.Claims.Should().Contain(c => c.Type == ClaimTypes.Role && c.Value == Roles.Admin);
+            jwt.Claims.Should().Contain(c => c.Type == ClaimTypes.Role && c.Value == Roles.User);
+
+
+
+        }
 
         public class LoginDto
         {
-            public string UserNameOrEmail { get; set; }
-            public string Password { get; set; }
+            public string UserNameOrEmail { get; set; } = string.Empty;
+            public string Password { get; set; } = string.Empty;
 
 
         }
@@ -314,42 +437,32 @@ namespace AuctionPlatform.Tests
                 return provider;
             }
 
-            //public static UserManager<AppUser> CreateUserManager()
-            //    => GetRequiredService<UserManager<AppUser>>();
 
-            //public static RoleManager<IdentityRole> CreateRoleManager()
-            //    => GetRequiredService<RoleManager<IdentityRole>>();
 
             public static IConfiguration CreateTestConfig()
             {
                 return new ConfigurationBuilder()
                     .AddInMemoryCollection(new Dictionary<string, string?>
                     {
-                        ["Jwt:Key"] = "TEST_SECRET_KEY_32_CHARS_LONG_TEST",
-                        ["Jwt:Issuer"] = "TestIssuer",
-                        ["Jwt:Audience"] = "TestAudience",
-                        ["Jwt:ExpiresHours"] = "1"
+                        ["JwtSettings:Key"] = "TEST_SECRET_KEY_32_CHARS_LONG_TEST",
+                        ["JwtSettings:Issuer"] = "TestIssuer",
+                        ["JwtSettings:Audience"] = "TestAudience",
+                        ["JwtSettings:ExpiresHours"] = "1"
                     })
                     .Build();
             }
         }
 
 
-
-
-
-
-
-
-
-
         public interface IUserService
         {
 
             Task<Result<CreateUserResponseDto>> AddAsync(CreateUserDto dto);
-            //Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto);
+            Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto);
 
-            //Task<string> GenerateToken(AppUser user);   
+            Task<string> GenerateToken(AppUser user);
+
+            Task<IEnumerable<string>> GetUserRoles(AppUser user);
         }
 
         public class LoginResponseDto
@@ -406,47 +519,69 @@ namespace AuctionPlatform.Tests
 
             }
 
-            //public async Task<string> GenerateToken(AppUser user)
-            //{
-            //    var claims = new List<Claim>
-            //    {
-            //    new Claim(ClaimTypes.NameIdentifier, user.Id),
-            //    new Claim(ClaimTypes.Name, user.UserName ?? ""),
-            //    new Claim(ClaimTypes.Email, user.Email ?? "")
-            //    };
+            public async Task<IEnumerable<string>> GetUserRoles(AppUser user)
+            {
+
+                return await _userManager.GetRolesAsync(user);
+            }
+
+            public async Task<string> GenerateToken(AppUser user)
+            {
 
 
+                var claims = new List<Claim>
+                {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName ?? ""),
+                new Claim(ClaimTypes.Email, user.Email ?? ""),
 
-            //    var secretKey = _config["JwtSettings:Key"];
-            //    var issuer = _config["JwtSettings:Issuer"];
-            //    var audience = _config["JwtSettings:Audience"];
+                };
 
-            //    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
-            //    var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var userRoles = await GetUserRoles(user);
 
-            //    var token = new JwtSecurityToken(
-            //        issuer: issuer,
-            //        audience: audience,
-            //        claims: claims,
-            //        expires: DateTime.UtcNow.AddHours(1),
-            //        signingCredentials: creds
-            //    );
-            //    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            //    return tokenString;
-            //}
-            //public async Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto)
-            //{
-            //    var userEntity = dto.UserNameOrEmail.Contains("@") ?
-            //         await _userManager.FindByEmailAsync(dto.UserNameOrEmail)
-            //         : await _userManager.FindByNameAsync(dto.UserNameOrEmail);
+                claims.AddRange(
+                    userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            //    if (userEntity is null)
-            //        return Result<LoginResponseDto>.Fail(ErrorMessages.UserNotFound);
+                var secretKey = _config["JwtSettings:Key"];
+                var issuer = _config["JwtSettings:Issuer"];
+                var audience = _config["JwtSettings:Audience"];
 
-            //    var result = await _userManager.CheckPasswordAsync(userEntity, dto.Password);
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!));
+                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                var token = new JwtSecurityToken(
+                    issuer: issuer,
+                    audience: audience,
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddHours(1),
+                    signingCredentials: creds
+                );
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+                return tokenString;
+            }
 
 
-            //}
+            public async Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto)
+            {
+                var userEntity = dto.UserNameOrEmail.Contains("@") ?
+                     await _userManager.FindByEmailAsync(dto.UserNameOrEmail)
+                     : await _userManager.FindByNameAsync(dto.UserNameOrEmail);
+
+                if (userEntity is null)
+                    return Result<LoginResponseDto>.Fail(ErrorMessages.UserNotFound);
+
+                var result = await _userManager.CheckPasswordAsync(userEntity, dto.Password);
+
+                if (!result)
+                    return Result<LoginResponseDto>.Fail(ErrorMessages.WrongPassword);
+
+                var token = await GenerateToken(userEntity);
+
+                var responseDto = new LoginResponseDto { Token = token };
+
+                return Result<LoginResponseDto>.Ok(responseDto);
+            }
         }
 
     }
