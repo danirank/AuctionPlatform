@@ -19,6 +19,58 @@ namespace AuctionPlatform.Tests
 
     public class UserServiceTest
     {
+
+        public class TestIdentityDbContext : IdentityDbContext<AppUser>
+        {
+            public TestIdentityDbContext(DbContextOptions<TestIdentityDbContext> options) : base(options) { }
+        }
+
+        public static class IdentityTestFactory
+        {
+            public static ServiceProvider BuildProvider()
+            {
+                var services = new ServiceCollection();
+
+                services.AddDbContext<TestIdentityDbContext>(opt =>
+                    opt.UseInMemoryDatabase("TestDb_" + Guid.NewGuid()));
+
+                services
+                    .AddIdentityCore<AppUser>(options =>
+                    {
+                        options.Password.RequireDigit = false;
+                        options.Password.RequireNonAlphanumeric = false;
+                        options.Password.RequireUppercase = false;
+                        options.Password.RequireLowercase = false;
+                        options.Password.RequiredLength = 1;
+                    })
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<TestIdentityDbContext>();
+
+                // (valfritt men vanligt) om du använder tokens i något flöde
+                services.AddLogging();
+
+                var provider = services.BuildServiceProvider();
+
+                return provider;
+            }
+
+
+
+            public static IConfiguration CreateTestConfig()
+            {
+                return new ConfigurationBuilder()
+                    .AddInMemoryCollection(new Dictionary<string, string?>
+                    {
+                        ["JwtSettings:Key"] = "TEST_SECRET_KEY_32_CHARS_LONG_TEST",
+                        ["JwtSettings:Issuer"] = "TestIssuer",
+                        ["JwtSettings:Audience"] = "TestAudience",
+                        ["JwtSettings:ExpiresHours"] = "1"
+                    })
+                    .Build();
+            }
+        }
+
+
         [Fact]
         public async Task CreateUmAsync_should_Return_ErrorIfMissingInfo()
         {
@@ -370,62 +422,6 @@ namespace AuctionPlatform.Tests
 
 
         }
-
-
-
-        public class TestIdentityDbContext : IdentityDbContext<AppUser>
-        {
-            public TestIdentityDbContext(DbContextOptions<TestIdentityDbContext> options) : base(options) { }
-        }
-
-        public static class IdentityTestFactory
-        {
-            public static ServiceProvider BuildProvider()
-            {
-                var services = new ServiceCollection();
-
-                services.AddDbContext<TestIdentityDbContext>(opt =>
-                    opt.UseInMemoryDatabase("TestDb_" + Guid.NewGuid()));
-
-                services
-                    .AddIdentityCore<AppUser>(options =>
-                    {
-                        options.Password.RequireDigit = false;
-                        options.Password.RequireNonAlphanumeric = false;
-                        options.Password.RequireUppercase = false;
-                        options.Password.RequireLowercase = false;
-                        options.Password.RequiredLength = 1;
-                    })
-                    .AddRoles<IdentityRole>()
-                    .AddEntityFrameworkStores<TestIdentityDbContext>();
-
-                // (valfritt men vanligt) om du använder tokens i något flöde
-                services.AddLogging();
-
-                var provider = services.BuildServiceProvider();
-
-                return provider;
-            }
-
-
-
-            public static IConfiguration CreateTestConfig()
-            {
-                return new ConfigurationBuilder()
-                    .AddInMemoryCollection(new Dictionary<string, string?>
-                    {
-                        ["JwtSettings:Key"] = "TEST_SECRET_KEY_32_CHARS_LONG_TEST",
-                        ["JwtSettings:Issuer"] = "TestIssuer",
-                        ["JwtSettings:Audience"] = "TestAudience",
-                        ["JwtSettings:ExpiresHours"] = "1"
-                    })
-                    .Build();
-            }
-        }
-
-
-
-
 
     }
 }

@@ -9,7 +9,7 @@ namespace AuctionPlatform.Api.Data.Entities
         public int Id { get; set; }
 
         [Required]
-        public DateTime BidTimeUtc { get; set; }
+        public DateTime BidTimeUtc { get; set; } = DateTime.UtcNow;
 
         [Required]
         [Precision(18, 2)]

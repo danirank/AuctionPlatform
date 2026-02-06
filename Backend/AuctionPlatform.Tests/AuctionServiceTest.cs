@@ -228,6 +228,8 @@ namespace AuctionPlatform.Tests
 
         }
 
+
+
         [Fact]
         public async Task GetAllAsync_ShouldReturn_Succes_true_And_ListOfAuctions()
         {
@@ -252,6 +254,8 @@ namespace AuctionPlatform.Tests
             result.Data?.Count.Should().Be(4);
 
         }
+
+
         [Fact]
         public async Task GetAllAsync_ShouldReturn_OpenAuctions()
         {

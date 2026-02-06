@@ -10,5 +10,8 @@
         public const string UserNotFound = "Ivalid username or email";
         public const string WrongPassword = "Invalid Password";
         public const string FailedAddingRole = "Failed Adding Roles";
+        public const string HigherBidExists = "Bid have to be higher than existing";
+        public const string BidOnOwnAuction = "You cant bid on your own auction";
+        public const string DeleteBidThatIsNotUsers = "Trying to delete someone else bid";
     }
 }

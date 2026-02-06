@@ -28,6 +28,14 @@ namespace AuctionPlatform.Api.Data.Repos
             return await _context.Bids.Where(b => b.AuctionId == auctionId).ToListAsync();
         }
 
+        public async Task<Bid?> HighestBidByAuctionId(int auctionId)
+        {
+            return await _context.Bids
+                .Where(b => b.AuctionId == auctionId)
+                .OrderByDescending(b => b.BidAmount)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> DeleteAsync(int bidId)
         {
             var bid = await _context.Bids.FindAsync(bidId);
@@ -40,5 +48,9 @@ namespace AuctionPlatform.Api.Data.Repos
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<Bid?> FindByIdAsync(int bidId)
+        {
+            return await _context.Bids.FirstOrDefaultAsync(b => b.Id == bidId);
+        }
     }
 }
