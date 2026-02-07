@@ -20,6 +20,9 @@ namespace AuctionPlatform.Api.Data.DTO
         public DateTime StartDateUtc { get; set; }
         public DateTime EndDateUtc { get; set; }
 
+        public bool IsDeactivatedByAdmin { get; set; }
+
+
 
 
     }

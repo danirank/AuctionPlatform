@@ -12,6 +12,10 @@ namespace AuctionPlatform.Api.Data.DTO
         public DateTime? newEndDateUtc { get; set; }
     }
 
+    public class AdminDeactivateAuctionDto
+    {
+        public bool IsDeactivatedByAdmin { get; set; } = false;
+    }
 
     public class UpdateAuctionResponseDto
     {
@@ -20,6 +24,10 @@ namespace AuctionPlatform.Api.Data.DTO
         public bool IsOpen { get; set; }
         public decimal StartPrice { get; set; }
         public string? ImageUrl { get; set; }
+
+        public bool IsDeactivatedByAdmin { get; set; } = false;
+
+
 
 
     }

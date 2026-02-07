@@ -50,6 +50,37 @@ namespace AuctionPlatform.Api.Core.Services
 
         }
 
+        public async Task<Result<UpdateAuctionResponseDto>> DeActivateAuction(AdminDeactivateAuctionDto dto, int auctionId)
+        {
+            var auction = await _repo.FindByIdAsync(auctionId);
+
+            if (auction is null)
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            auction.IsDeactivatedByAdmin = dto.IsDeactivatedByAdmin;
+
+            var result = await _repo.SaveChangesAsync();
+
+            if (!result)
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.FailSaveAsync);
+
+            var respDto = new UpdateAuctionResponseDto
+            {
+                Title = auction.Title,
+                Description = auction.Description,
+                ImageUrl = auction.ImageUrl,
+                StartPrice = auction.StartPrice,
+                IsDeactivatedByAdmin = auction.IsDeactivatedByAdmin
+
+            };
+
+            return Result<UpdateAuctionResponseDto>.Ok(respDto);
+
+
+
+
+        }
+
         public async Task<Result<List<AuctionsGetResponseDto>>> GetAllAsync(string search)
         {
             var result = await _repo.GetAllAsync(search);
@@ -64,6 +95,7 @@ namespace AuctionPlatform.Api.Core.Services
                 ImageUrl = a.ImageUrl ?? string.Empty,
                 StartDateUtc = a.StartAtUtc,
                 EndDateUtc = a.EndAtUtc,
+                IsDeactivatedByAdmin = a.IsDeactivatedByAdmin
 
 
 
@@ -85,6 +117,8 @@ namespace AuctionPlatform.Api.Core.Services
                 ImageUrl = a.ImageUrl ?? string.Empty,
                 StartDateUtc = a.StartAtUtc,
                 EndDateUtc = a.EndAtUtc,
+                IsDeactivatedByAdmin = a.IsDeactivatedByAdmin
+
 
             }).ToList();
 
@@ -105,6 +139,8 @@ namespace AuctionPlatform.Api.Core.Services
                 ImageUrl = a.ImageUrl ?? string.Empty,
                 StartDateUtc = a.StartAtUtc,
                 EndDateUtc = a.EndAtUtc,
+                IsDeactivatedByAdmin = a.IsDeactivatedByAdmin
+
 
             }).ToList();
 
@@ -125,6 +161,8 @@ namespace AuctionPlatform.Api.Core.Services
                 ImageUrl = a.ImageUrl ?? string.Empty,
                 StartDateUtc = a.StartAtUtc,
                 EndDateUtc = a.EndAtUtc,
+                IsDeactivatedByAdmin = a.IsDeactivatedByAdmin
+
 
             }).ToList();
 
@@ -163,7 +201,9 @@ namespace AuctionPlatform.Api.Core.Services
                 Description = entity.Description,
                 StartPrice = entity.StartPrice,
                 ImageUrl = entity.ImageUrl,
-                IsOpen = entity.IsOpen
+                IsOpen = entity.IsOpen,
+                IsDeactivatedByAdmin = entity.IsDeactivatedByAdmin
+
 
             };
 

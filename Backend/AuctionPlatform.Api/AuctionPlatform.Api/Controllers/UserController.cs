@@ -67,5 +67,7 @@ namespace AuctionPlatform.Api.Controllers
             return result.IsSucces ? Ok(result.Data) : BadRequest(result.Error);
         }
 
+
+
     }
 }

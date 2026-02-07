@@ -27,6 +27,8 @@ namespace AuctionPlatform.Api.Data.Entities
 
         public bool IsOpen => DateTime.UtcNow < EndAtUtc;
 
+        public bool IsDeactivatedByAdmin { get; set; } = false;
+
         public string UserId { get; set; } = string.Empty;
         public AppUser? User { get; set; }
 

@@ -96,6 +96,18 @@ namespace AuctionPlatform.Api.Controllers
 
 
         }
+
+        [Route("/dectivate")]
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeActivateAuction(AdminDeactivateAuctionDto dto, int auctionId)
+        {
+            var result = await _auctionService.DeActivateAuction(dto, auctionId);
+
+            return result.IsSucces ? Ok(result.Data) : BadRequest(result.Error);
+        }
         #endregion
+
+
     }
 }
