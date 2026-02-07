@@ -17,13 +17,21 @@ namespace AuctionPlatform.Api.Core.Services
             _auctionRepo = auctionRepo;
         }
 
-        public async Task<Result<AddBidResponseDto>> AddBidAsync(AddBidDto dto)
+        public async Task<Result<AddBidResponseDto>> AddBidAsync(AddBidDto dto, string userId)
         {
             var auctionExists = await _auctionRepo.FindByIdAsync(dto.AuctionId);
+
             if (auctionExists is null)
                 return Result<AddBidResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
 
-            if (auctionExists.UserId == dto.UserId)
+            if (!auctionExists.IsOpen)
+                return Result<AddBidResponseDto>.Fail(ErrorMessages.AuctionIsClose);
+
+            if (dto.Amount < auctionExists.StartPrice)
+                return Result<AddBidResponseDto>.Fail(ErrorMessages.BidLowerThanStrtSprice);
+
+
+            if (auctionExists.UserId == userId)
                 return Result<AddBidResponseDto>.Fail(ErrorMessages.BidOnOwnAuction);
 
 
@@ -37,8 +45,9 @@ namespace AuctionPlatform.Api.Core.Services
             var bidEntity = new Bid
             {
                 BidAmount = dto.Amount,
-                UserId = dto.UserId,
+                UserId = userId,
                 AuctionId = dto.AuctionId
+
 
             };
 
@@ -51,22 +60,50 @@ namespace AuctionPlatform.Api.Core.Services
             {
                 UserId = result.UserId ?? string.Empty,
                 AuctionId = result.AuctionId,
-                BidId = result.Id
+                BidId = result.Id,
+                BidDateTime = result.BidTimeUtc
+
+
             };
 
             return Result<AddBidResponseDto>.Ok(responseDto);
 
         }
 
-        public async Task<Result<DeleteBidResponseDto>> DeleteAsync(DeleteBidDto dto)
+        public async Task<Result<DeleteBidResponseDto>> DeleteAsync(DeleteBidDto dto, string userId)
         {
+            var auctionEntity = await _auctionRepo.FindByIdAsync(dto.AuctionId);
+
+            if (auctionEntity is null)
+                return Result<DeleteBidResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            if (!auctionEntity.IsOpen)
+                return Result<DeleteBidResponseDto>.Fail(ErrorMessages.AuctionIsClose);
+
+
+
             var bidEntity = await _bidRepo.FindByIdAsync(dto.BidId);
 
             if (bidEntity is null)
                 return Result<DeleteBidResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
 
-            if (bidEntity.UserId != dto.UserId)
+            var highetstBid = await _bidRepo.HighestBidByAuctionId(dto.AuctionId);
+
+            if (highetstBid is null)
+                return Result<DeleteBidResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+
+
+            if (bidEntity.BidAmount < highetstBid.BidAmount)
+                return Result<DeleteBidResponseDto>.Fail(ErrorMessages.BidIsNotLatest);
+
+            if (bidEntity.UserId != userId)
                 return Result<DeleteBidResponseDto>.Fail(ErrorMessages.DeleteBidThatIsNotUsers);
+
+            var result = await _bidRepo.DeleteAsync(dto.BidId);
+
+            if (!result)
+                return Result<DeleteBidResponseDto>.Fail(ErrorMessages.FailSaveAsync);
 
             var responseDto = new DeleteBidResponseDto
             {
@@ -75,6 +112,23 @@ namespace AuctionPlatform.Api.Core.Services
 
             return Result<DeleteBidResponseDto>.Ok(responseDto);
         }
+
+        public async Task<Result<List<BidsGetDto>>> GetBidsForAuction(int auctionId)
+        {
+            var bidsList = await _bidRepo.BidsByAuctionId(auctionId);
+
+            var dto = bidsList.Select(b => new BidsGetDto
+            {
+                BidAmount = b.BidAmount,
+                BidDateTime = b.BidTimeUtc,
+                UserName = b.User?.UserName
+            }).ToList();
+
+            return Result<List<BidsGetDto>>.Ok(dto);
+
+
+        }
     }
+
 
 }

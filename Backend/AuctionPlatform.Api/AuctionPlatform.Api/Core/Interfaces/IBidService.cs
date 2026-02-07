@@ -5,7 +5,8 @@ namespace AuctionPlatform.Api.Core.Interfaces
 {
     public interface IBidService
     {
-        Task<Result<AddBidResponseDto>> AddBidAsync(AddBidDto dto);
-        Task<Result<DeleteBidResponseDto>> DeleteAsync(DeleteBidDto dto);
+        Task<Result<AddBidResponseDto>> AddBidAsync(AddBidDto dto, string userId);
+        Task<Result<DeleteBidResponseDto>> DeleteAsync(DeleteBidDto dto, string userId);
+        Task<Result<List<BidsGetDto>>> GetBidsForAuction(int auctionId);
     }
 }

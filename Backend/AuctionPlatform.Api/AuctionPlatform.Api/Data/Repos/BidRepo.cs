@@ -25,7 +25,13 @@ namespace AuctionPlatform.Api.Data.Repos
 
         public async Task<List<Bid>> BidsByAuctionId(int auctionId)
         {
-            return await _context.Bids.Where(b => b.AuctionId == auctionId).ToListAsync();
+            var result = await _context.Bids
+                .AsNoTracking()
+                .Where(b => b.AuctionId == auctionId)
+                .Include(u => u.User)
+                .ToListAsync();
+
+            return result;
         }
 
         public async Task<Bid?> HighestBidByAuctionId(int auctionId)

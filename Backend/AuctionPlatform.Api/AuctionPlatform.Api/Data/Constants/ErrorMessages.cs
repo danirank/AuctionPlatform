@@ -15,5 +15,8 @@
         public const string DeleteBidThatIsNotUsers = "Trying to delete someone else bid";
         public const string Unauthorized = "Unathorized";
         public const string UpdateElsesAuction = "The post is not yours";
+        public const string BidLowerThanStrtSprice = "Bid was lower than startprice";
+        public const string BidIsNotLatest = "Cannot delete if there is bid after";
+        public const string AuctionIsClose = "Auction is closed";
     }
 }

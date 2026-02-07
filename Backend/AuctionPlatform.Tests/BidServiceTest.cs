@@ -37,12 +37,11 @@ namespace AuctionPlatform.Tests
             var addBidDto = new AddBidDto
             {
                 AuctionId = 2,
-                UserId = "user3",
                 Amount = 3
             };
 
 
-            var result = await _sut.AddBidAsync(addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto, "user3");
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.EntityWithIdNotFound);
@@ -62,7 +61,8 @@ namespace AuctionPlatform.Tests
                 {
                     AuctionId = 1,
                     UserId = "User1",
-                    Bids = new List<Bid>()
+                    Bids = new List<Bid>(),
+                    EndAtUtc = DateTime.UtcNow.AddMonths(1)
                 });
 
             _bidRepoMock.Setup(r => r.HighestBidByAuctionId(It.IsAny<int>()))
@@ -76,12 +76,12 @@ namespace AuctionPlatform.Tests
 
             var addBidDto = new AddBidDto
             {
-                UserId = "user3",
+
                 Amount = bid
             };
 
 
-            var result = await _sut.AddBidAsync(addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto, "user3");
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.HigherBidExists);
@@ -103,7 +103,9 @@ namespace AuctionPlatform.Tests
                 {
                     AuctionId = 1,
                     UserId = "User1",
-                    Bids = new List<Bid>()
+                    Bids = new List<Bid>(),
+                    EndAtUtc = DateTime.UtcNow.AddMonths(1)
+
                 });
 
             _bidRepoMock.Setup(r => r.HighestBidByAuctionId(It.IsAny<int>()))
@@ -128,11 +130,11 @@ namespace AuctionPlatform.Tests
             var addBidDto = new AddBidDto
             {
                 AuctionId = 1,
-                UserId = "user3",
+
                 Amount = bid
             };
 
-            var result = await _sut.AddBidAsync(addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto, "user3");
 
             result.IsSucces.Should().BeTrue();
             result.Data.Should().NotBeNull();
@@ -145,16 +147,23 @@ namespace AuctionPlatform.Tests
         {
             _auctionRepoMock.
                 Setup(r => r.FindByIdAsync(It.IsAny<int>()))
-                .ReturnsAsync(new Auction { AuctionId = 1, UserId = "user1", Bids = new List<Bid>() });
+                .ReturnsAsync(new Auction
+                {
+                    AuctionId = 1,
+                    UserId = "user1",
+                    Bids = new List<Bid>(),
+                    EndAtUtc = DateTime.UtcNow.AddMonths(1)
+                });
+
 
             var addBidDto = new AddBidDto
             {
                 AuctionId = 1,
-                UserId = "user1",
+
                 Amount = 20
             };
 
-            var result = await _sut.AddBidAsync(addBidDto);
+            var result = await _sut.AddBidAsync(addBidDto, "user1");
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.BidOnOwnAuction);
@@ -165,6 +174,12 @@ namespace AuctionPlatform.Tests
         [Fact]
         public async Task DeleteBid_ShouldReturn_ErrorMessage_DoesntOwnBid()
         {
+            _auctionRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Auction
+                {
+                    EndAtUtc = DateTime.UtcNow.AddMonths(1)
+                });
+
             _bidRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(new Bid
                 {
@@ -174,14 +189,16 @@ namespace AuctionPlatform.Tests
                     BidAmount = 20
                 });
 
+            _bidRepoMock.Setup(r => r.HighestBidByAuctionId(It.IsAny<int>()))
+                .ReturnsAsync(new Bid { BidAmount = 1 });
+
             var deleteDto = new DeleteBidDto
             {
-                UserId = "user2",
                 BidId = 1,
             };
 
 
-            var result = await _sut.DeleteAsync(deleteDto);
+            var result = await _sut.DeleteAsync(deleteDto, "user2");
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.DeleteBidThatIsNotUsers);
@@ -197,12 +214,11 @@ namespace AuctionPlatform.Tests
 
             var deleteDto = new DeleteBidDto
             {
-                UserId = "user2",
                 BidId = 1,
             };
 
 
-            var result = await _sut.DeleteAsync(deleteDto);
+            var result = await _sut.DeleteAsync(deleteDto, "user2");
 
             result.IsSucces.Should().BeFalse();
             result.Error.Should().Be(ErrorMessages.EntityWithIdNotFound);
@@ -212,6 +228,11 @@ namespace AuctionPlatform.Tests
         [Fact]
         public async Task DeleteBid_ShouldReturnTrueAndSuccesMessage()
         {
+            _auctionRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>()))
+                .ReturnsAsync(new Auction
+                {
+                    EndAtUtc = DateTime.UtcNow.AddMonths(1)
+                });
 
             _bidRepoMock.Setup(r => r.FindByIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(new Bid
@@ -222,14 +243,26 @@ namespace AuctionPlatform.Tests
                     BidAmount = 20
                 });
 
+            _bidRepoMock.Setup(r => r.HighestBidByAuctionId(It.IsAny<int>()))
+                .ReturnsAsync(new Bid
+                {
+                    Id = 1,
+                    AuctionId = 1,
+                    UserId = "user1",
+                    BidAmount = 20
+                });
+
+
+            _bidRepoMock.Setup(r => r.DeleteAsync(It.IsAny<int>()))
+                .ReturnsAsync(true);
+
             var deleteDto = new DeleteBidDto
             {
-                UserId = "user1",
                 BidId = 1,
             };
 
 
-            var result = await _sut.DeleteAsync(deleteDto);
+            var result = await _sut.DeleteAsync(deleteDto, "user1");
 
             result.IsSucces.Should().BeTrue();
             result.Data?.Message.Should().Be(ResponseMessages.DeleteSucces);

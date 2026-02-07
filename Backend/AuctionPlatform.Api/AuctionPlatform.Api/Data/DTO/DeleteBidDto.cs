@@ -4,9 +4,12 @@
     {
         public string Message { get; set; } = string.Empty;
     }
+
     public class DeleteBidDto
     {
-        public string UserId { get; set; }
+
         public int BidId { get; set; }
+        public int AuctionId { get; set; }
+
     }
 }
