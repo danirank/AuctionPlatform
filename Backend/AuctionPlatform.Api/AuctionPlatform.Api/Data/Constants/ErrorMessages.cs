@@ -7,7 +7,7 @@
         public const string EntityWithIdNotFound = "The entity was not found";
         public const string FailSaveAsync = "Something went wrong when trying to save changes";
         public const string UserCredentialsMissing = "Invalid credentials entered for new user";
-        public const string UserNotFound = "Ivalid username or email";
+        public const string UserNotFound = "Invalid username or email";
         public const string WrongPassword = "Invalid Password";
         public const string FailedAddingRole = "Failed Adding Roles";
         public const string HigherBidExists = "Bid have to be higher than existing";

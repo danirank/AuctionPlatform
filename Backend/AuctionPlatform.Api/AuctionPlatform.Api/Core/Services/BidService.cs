@@ -128,6 +128,25 @@ namespace AuctionPlatform.Api.Core.Services
 
 
         }
+
+        public async Task<Result<BidsGetDto>> GetHighestBidsForAuction(int auctionId)
+        {
+            var highestBid = await _bidRepo.HighestBidByAuctionId(auctionId);
+
+            if (highestBid is null)
+                return Result<BidsGetDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            var dto = new BidsGetDto
+            {
+
+                BidAmount = highestBid.BidAmount,
+                BidDateTime = highestBid.BidTimeUtc,
+                UserName = highestBid.User?.UserName
+            };
+
+
+            return Result<BidsGetDto>.Ok(dto);
+        }
     }
 
 

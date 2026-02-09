@@ -36,7 +36,7 @@ namespace AuctionPlatform.Api.Data.Repos
 
         public async Task<Bid?> HighestBidByAuctionId(int auctionId)
         {
-            return await _context.Bids
+            return await _context.Bids.Include(u => u.User)
                 .Where(b => b.AuctionId == auctionId)
                 .OrderByDescending(b => b.BidAmount)
                 .FirstOrDefaultAsync();

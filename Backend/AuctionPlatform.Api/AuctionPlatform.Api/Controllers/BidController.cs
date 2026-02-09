@@ -54,5 +54,12 @@ namespace AuctionPlatform.Api.Controllers
             return Ok(result.Data);
         }
 
+        [Route("/highest")]
+        [HttpGet]
+        public async Task<IActionResult> GetHighestBidByAuction(int auctionId)
+        {
+            var result = await _bidService.GetHighestBidsForAuction(auctionId);
+            return Ok(result.Data);
+        }
     }
 }

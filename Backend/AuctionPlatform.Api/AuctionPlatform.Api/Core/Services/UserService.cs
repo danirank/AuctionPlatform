@@ -29,7 +29,7 @@ namespace AuctionPlatform.Api.Core.Services
             {
                 UserName = dto.UserName,
                 Email = dto.Email,
-                FirstName = dto.FirsName,
+                FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 IsActiveUser = true
 

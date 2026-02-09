@@ -11,6 +11,7 @@ namespace AuctionPlatform.Api.Core.Services
         private readonly IAuctionRepo _repo;
         private readonly IBidRepo _bidRepo;
 
+
         public AuctionService(IAuctionRepo repo, IBidRepo bidRepo)
         {
             _repo = repo;
@@ -85,6 +86,7 @@ namespace AuctionPlatform.Api.Core.Services
         {
             var result = await _repo.GetAllAsync(search);
 
+
             var dto = result.Select(a => new AuctionsGetResponseDto
             {
                 Id = a.AuctionId,
@@ -100,6 +102,22 @@ namespace AuctionPlatform.Api.Core.Services
 
 
             }).ToList();
+
+            foreach (var a in dto)
+            {
+                var highestBid = await _bidRepo.HighestBidByAuctionId(a.Id);
+
+                if (highestBid != null)
+                {
+                    a.HighestBid = new BidsGetDto
+                    {
+                        BidAmount = highestBid.BidAmount,
+                        UserName = highestBid.User?.UserName,
+                        BidDateTime = highestBid.BidTimeUtc
+                    };
+                }
+
+            }
 
             return Result<List<AuctionsGetResponseDto>>.Ok(dto);
         }
@@ -121,6 +139,21 @@ namespace AuctionPlatform.Api.Core.Services
 
 
             }).ToList();
+            foreach (var a in dto)
+            {
+                var highestBid = await _bidRepo.HighestBidByAuctionId(a.Id);
+
+                if (highestBid != null)
+                {
+                    a.HighestBid = new BidsGetDto
+                    {
+                        BidAmount = highestBid.BidAmount,
+                        UserName = highestBid.User?.UserName,
+                        BidDateTime = highestBid.BidTimeUtc
+                    };
+                }
+
+            }
 
             return Result<List<AuctionsGetResponseDto>>.Ok(dto);
         }
@@ -143,7 +176,21 @@ namespace AuctionPlatform.Api.Core.Services
 
 
             }).ToList();
+            foreach (var a in dto)
+            {
+                var highestBid = await _bidRepo.HighestBidByAuctionId(a.Id);
 
+                if (highestBid != null)
+                {
+                    a.HighestBid = new BidsGetDto
+                    {
+                        BidAmount = highestBid.BidAmount,
+                        UserName = highestBid.User?.UserName,
+                        BidDateTime = highestBid.BidTimeUtc
+                    };
+                }
+
+            }
             return Result<List<AuctionsGetResponseDto>>.Ok(dto);
         }
 
@@ -165,6 +212,21 @@ namespace AuctionPlatform.Api.Core.Services
 
 
             }).ToList();
+            foreach (var a in dto)
+            {
+                var highestBid = await _bidRepo.HighestBidByAuctionId(a.Id);
+
+                if (highestBid != null)
+                {
+                    a.HighestBid = new BidsGetDto
+                    {
+                        BidAmount = highestBid.BidAmount,
+                        UserName = highestBid.User?.UserName,
+                        BidDateTime = highestBid.BidTimeUtc
+                    };
+                }
+
+            }
 
             return Result<List<AuctionsGetResponseDto>>.Ok(dto);
         }

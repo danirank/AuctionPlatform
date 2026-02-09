@@ -1,0 +1,13 @@
+header {
+    width: 100%; 
+    background-color:aqua;
+    position: sticky;
+}
+
+.container {
+
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+
+}

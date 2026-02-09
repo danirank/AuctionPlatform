@@ -13,6 +13,8 @@ namespace AuctionPlatform.Api.Data.DTO
         [Range(0.01, double.MaxValue)]
         public decimal StartPrice { get; set; }
 
+        public BidsGetDto? HighestBid { get; set; }
+
         public string? ImageUrl { get; set; }
 
         public bool IsOpen { get; set; }

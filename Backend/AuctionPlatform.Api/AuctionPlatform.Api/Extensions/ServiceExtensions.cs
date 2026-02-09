@@ -92,6 +92,8 @@ namespace BlogPostApi.Extensions
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@åäöÅÄÖ";
 
             })
                 .AddRoles<IdentityRole>()
@@ -109,5 +111,7 @@ namespace BlogPostApi.Extensions
 
             return services;
         }
+
+
     }
 }

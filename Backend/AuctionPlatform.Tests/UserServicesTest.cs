@@ -82,7 +82,7 @@ namespace AuctionPlatform.Tests
                 UserName = null,
                 Email = null,
                 Password = "test",
-                FirsName = null,
+                FirstName = null,
                 LastName = null,
 
             };
@@ -91,7 +91,7 @@ namespace AuctionPlatform.Tests
             {
                 UserName = createUserdDto.UserName,
                 Email = createUserdDto.Email,
-                FirstName = createUserdDto.FirsName,
+                FirstName = createUserdDto.FirstName,
                 LastName = createUserdDto.LastName
             };
 
@@ -112,7 +112,7 @@ namespace AuctionPlatform.Tests
                 UserName = "Test",
                 Email = "test@mail.com",
                 Password = "test",
-                FirsName = "first",
+                FirstName = "first",
                 LastName = "last",
 
             };
@@ -121,7 +121,7 @@ namespace AuctionPlatform.Tests
             {
                 UserName = createUserdDto.UserName,
                 Email = createUserdDto.Email,
-                FirstName = createUserdDto.FirsName,
+                FirstName = createUserdDto.FirstName,
                 LastName = createUserdDto.LastName
             };
 
@@ -144,7 +144,7 @@ namespace AuctionPlatform.Tests
                 UserName = "Test",
                 Email = "test@mail.com",
                 Password = "test",
-                FirsName = "first",
+                FirstName = "first",
                 LastName = "last",
 
             };
@@ -153,7 +153,7 @@ namespace AuctionPlatform.Tests
                 UserName = "Test",
                 Email = "test@mail.com",
                 Password = "test2",
-                FirsName = "first",
+                FirstName = "first",
                 LastName = "last",
 
             };
@@ -162,14 +162,14 @@ namespace AuctionPlatform.Tests
             {
                 UserName = createUserdDto.UserName,
                 Email = createUserdDto.Email,
-                FirstName = createUserdDto.FirsName,
+                FirstName = createUserdDto.FirstName,
                 LastName = createUserdDto.LastName
             };
             var entity2 = new AppUser
             {
                 UserName = createUserdDto2.UserName,
                 Email = createUserdDto2.Email,
-                FirstName = createUserdDto2.FirsName,
+                FirstName = createUserdDto2.FirstName,
                 LastName = createUserdDto2.LastName
             };
 
@@ -197,7 +197,7 @@ namespace AuctionPlatform.Tests
                 UserName = null,
                 Email = null,
                 Password = "test",
-                FirsName = null,
+                FirstName = null,
                 LastName = null,
 
             };
@@ -227,7 +227,7 @@ namespace AuctionPlatform.Tests
                 UserName = "Test",
                 Email = "Test",
                 Password = "test",
-                FirsName = "Test",
+                FirstName = "Test",
                 LastName = "Test",
 
             };
@@ -257,7 +257,7 @@ namespace AuctionPlatform.Tests
                 UserName = "adim2",
                 Email = "Test2",
                 Password = "test2",
-                FirsName = "Tes2t",
+                FirstName = "Tes2t",
                 LastName = "Test2",
                 IsAdmin = true
             };
@@ -266,7 +266,7 @@ namespace AuctionPlatform.Tests
                 UserName = "adim1",
                 Email = "Test",
                 Password = "test",
-                FirsName = "Test",
+                FirstName = "Test",
                 LastName = "Test",
                 IsAdmin = false
             };
@@ -304,7 +304,7 @@ namespace AuctionPlatform.Tests
                 UserName = "adim2",
                 Email = "Test2",
                 Password = "test2",
-                FirsName = "Tes2t",
+                FirstName = "Tes2t",
                 LastName = "Test2",
                 IsAdmin = true
             };
@@ -313,7 +313,7 @@ namespace AuctionPlatform.Tests
                 UserName = "adim1",
                 Email = "Test",
                 Password = "test",
-                FirsName = "Test",
+                FirstName = "Test",
                 LastName = "Test",
                 IsAdmin = false
             };
@@ -354,7 +354,7 @@ namespace AuctionPlatform.Tests
                 UserName = "adim2",
                 Email = "Test2",
                 Password = "test2",
-                FirsName = "Tes2t",
+                FirstName = "Tes2t",
                 LastName = "Test2",
                 IsAdmin = true
             };
@@ -397,7 +397,7 @@ namespace AuctionPlatform.Tests
                 UserName = "adim2",
                 Email = "Test2",
                 Password = "test2",
-                FirsName = "Tes2t",
+                FirstName = "Tes2t",
                 LastName = "Test2",
                 IsAdmin = true
             };
