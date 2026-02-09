@@ -22,7 +22,6 @@ The application consumes a REST API built with ASP.NET Core and provides a respo
 - React
 - TypeScript
 - Vite
-- Axios (API communication)
 - CSS Modules / Custom CSS
 - React Router
 
