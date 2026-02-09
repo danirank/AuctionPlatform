@@ -19,8 +19,6 @@
         }
 
 
-
-
         public static Result<T> Fail(string error)
         {
             return new Result<T>
