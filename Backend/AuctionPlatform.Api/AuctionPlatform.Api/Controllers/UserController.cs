@@ -21,7 +21,7 @@ namespace AuctionPlatform.Api.Controllers
         {
             var result = await _userService.AddAsync(dto);
 
-            return result.IsSucces ? Ok(result.Data) : BadRequest(result.Error);
+            return result.IsSucces ? Ok(result.Data) : BadRequest(result);
 
         }
 
@@ -31,7 +31,7 @@ namespace AuctionPlatform.Api.Controllers
         {
             var result = await _userService.LoginAsync(dto);
 
-            return result.IsSucces ? Ok(result.Data) : BadRequest(result.Error);
+            return result.IsSucces ? Ok(result.Data) : BadRequest(result);
 
         }
 

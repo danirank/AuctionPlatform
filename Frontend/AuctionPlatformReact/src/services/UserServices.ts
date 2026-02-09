@@ -40,35 +40,3 @@ return JSON.parse(bodyText);
 
 
 
-export async function LoginUser(usernameOrEmail: string, password: string) {
-    const url = "https://localhost:7063/login"
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({usernameOrEmail, password})
-    });
-    const result = await response.json();
-    if(response.ok) {
-        await SaveToken(result.token);
-        return true;
-    } else {
-        return false;
-    }
-   
-}
-
-export async function SaveToken(token: string) {
-    localStorage.setItem("token", token);
-}
-
-export async function GetToken() {
-    return localStorage.getItem("token");
-}   
-
-export async function LogoutUser() {
-    localStorage.removeItem("token");
-}   
-
-

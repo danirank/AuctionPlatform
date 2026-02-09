@@ -1,5 +1,23 @@
+.container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  width: min(600px, 92vw);
+  margin: 0 auto;
+ 
+
+ 
+
+  /* för .icon */
+  position: sticky;
+}
+
 .wrapper {
   position: relative;
+  margin: 1rem;
+  max-width: 420px;
+
 }
 
 .input {

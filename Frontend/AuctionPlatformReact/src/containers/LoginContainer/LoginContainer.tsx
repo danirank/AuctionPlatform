@@ -1,12 +1,16 @@
 
 import { useState } from "react";
 import LoginForm from "../../components/LoginForm/LoginForm";
-import { LoginUser } from "../../services/UserServices";
+import { LoginUser } from "../../services/AuthService/AuthService";
+import { useNavigate } from "react-router-dom";
+import HomePage from "../../pages/Home";
+
 
 type LoginValues = {
   userNameOrEmail: string;
   password: string;
 };
+
 
 function LoginContainer() {
   const [values, setValues] = useState<LoginValues>({
@@ -16,6 +20,7 @@ function LoginContainer() {
 
   const [rootError, setRootError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+    const navigate = useNavigate();
 
   const handleChange = (name: keyof LoginValues, value: string) => {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -26,6 +31,7 @@ function LoginContainer() {
     setRootError("");
 
     try {
+
       setIsSubmitting(true);
 
       const loginResult = await LoginUser(values.userNameOrEmail.trim(), values.password);
@@ -34,8 +40,10 @@ function LoginContainer() {
         setRootError("Inloggning misslyckades. Kontrollera dina uppgifter och försök igen.");
         return;
       }
-
+      
       console.log("Login successful! Token:", loginResult);
+        navigate("/", { replace: true });
+      
 
       // TODO: navigera vidare (ex: /) och/eller spara token i auth-state
     } catch (err) {

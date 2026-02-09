@@ -9,6 +9,7 @@ const textValue = useRef<HTMLInputElement>(null);
 
   return (
     //Lägg till bakgrund ? 
+    <div className={styles.container}>
     <div className={styles.wrapper}>
       <input
         type="text"
@@ -23,6 +24,7 @@ const textValue = useRef<HTMLInputElement>(null);
         }}
       />
       <span className={styles.icon}>🔍</span>
+      </div>
     </div>
   );
 }

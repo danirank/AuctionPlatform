@@ -1,7 +1,8 @@
 import { useState } from "react";
 import RegisterForm from "../../components/RegisterForm/RegisterForm";
 import type { RegisterUserType } from "../../types/Types";
-import { RegisterUser, LoginUser } from "../../services/UserServices";
+import {LoginUser } from "../../services/AuthService/AuthService";
+import { RegisterUser } from "../../services/UserServices";
 
 type FormValues = {
   firstName: string;

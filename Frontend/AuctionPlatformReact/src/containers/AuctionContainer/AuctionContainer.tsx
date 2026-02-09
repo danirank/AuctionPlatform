@@ -2,7 +2,7 @@ import AuctionList from "../../components/AuctionList/AuctionList";
 import { useState, useEffect } from "react";
 import type { AuctionType } from "../../types/Types";
 import { GetAllOpenAuctions, GetOpenAuctionsSearch } from "../../services/AuctionService/AuctionsService";
-import Navbar from "../../components/Navbar/Navbar";
+
 import Searchbar from "../../components/Searchbar/Searchbar";
 
 
@@ -30,7 +30,7 @@ function AuctionContainer() {
 
     return (
         <>
-        <Navbar />
+       
         <Searchbar onSearch={search} />
         <AuctionList auctions={auctions} />
         </>
