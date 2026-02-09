@@ -1,31 +1,15 @@
-header {
-    width: 100%; 
-    background-color:aqua;
-    position: sticky;
-}
-
-.container {
-
-    display: flex;
-    justify-content: space-between;
-    padding: 1rem;
-
-}
-.container {
+.header {
   position: sticky;
-  top: 0;
-  z-index: 1000;
-
-  width: min(600px, 92vw);
-    margin: 0 auto;
-    
-  /* för .icon */
-  position: sticky;
+  top: 0;            /* <- viktigast, annars “fastnar” den inte */
+  z-index: 2000;
+  width: 100%;
+  background-color: aqua; /* eller en riktig färg */
 }
 
+/* container ska INTE vara sticky, bara layout */
 
-/* Header.module.css */
-:global(.navbar .nav-link) {
-  display: flex;
-  align-items: center;
+
+/* (valfritt) om du vill undvika att innehåll syns igenom vid scroll */
+.header {
+  background-color: aqua;
 }

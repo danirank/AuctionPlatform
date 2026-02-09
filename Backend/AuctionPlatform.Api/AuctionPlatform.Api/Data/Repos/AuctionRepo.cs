@@ -25,7 +25,7 @@ namespace AuctionPlatform.Api.Data.Repos
 
         public async Task<List<Auction>> GetAllAsync(string titleSearch)
         {
-            IQueryable<Auction> query = _context.Auctions;
+            IQueryable<Auction> query = _context.Auctions.Include(u => u.User);
 
             if (!string.IsNullOrWhiteSpace(titleSearch))
             {
@@ -38,7 +38,7 @@ namespace AuctionPlatform.Api.Data.Repos
         public async Task<List<Auction>> GetAllAsync()
         {
 
-            return await _context.Auctions.ToListAsync();
+            return await _context.Auctions.Include(u => u.User).ToListAsync();
         }
 
 
@@ -63,14 +63,18 @@ namespace AuctionPlatform.Api.Data.Repos
         public async Task<List<Auction>> GetAllOpenAsync()
         {
             var now = DateTime.UtcNow;
-            return await _context.Auctions.Where(a => now < a.EndAtUtc).ToListAsync();
+            return await _context.Auctions
+                .Include(u => u.User)
+                .Where(a => now < a.EndAtUtc).ToListAsync();
         }
 
 
         public async Task<List<Auction>> GetAllOpenAsync(string search)
         {
             var now = DateTime.UtcNow;
-            IQueryable<Auction> query = _context.Auctions.Where(a => now < a.EndAtUtc);
+            IQueryable<Auction> query = _context.Auctions
+                .Include(u => u.User)
+                .Where(a => now < a.EndAtUtc);
 
 
             if (!string.IsNullOrWhiteSpace(search))

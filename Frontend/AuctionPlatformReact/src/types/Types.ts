@@ -1,7 +1,13 @@
 
-
+export interface UserType {
+    userId: string;
+    userName: string;
+    email: string;
+    roles: string[];
+}
 export interface AuctionType {
     id: number,
+    userId: string,
     title: string,
     userName:string,
     description: string 

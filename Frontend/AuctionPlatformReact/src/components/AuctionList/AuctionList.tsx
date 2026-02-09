@@ -1,18 +1,23 @@
 import style from './AuctionList.module.css'
 import type { AuctionType } from '../../types/Types'
 import AuctionCard from '../AuctionCard/AuctionCard'
+import ClosedAuctionCard from '../ClosedAuctionCard/ClosedAuctionCard'  
+
 
 interface Props {
-    auctions: AuctionType[]
-    
-    
+    auctions: AuctionType[],
+    userId: string
 }
 
-function AuctionList({auctions}: Props) {
+function AuctionList({auctions, userId}: Props) {
 
     const list = auctions.map((auction) => {
-        return <AuctionCard key={auction.id} auction={auction}/>
+        return auction.isOpen && !auction.isDeactivatedByAdmin 
+        ? <AuctionCard key={auction.id} auction={auction} userId={userId}/> 
+        : <ClosedAuctionCard key={auction.id} auction={auction}/>;
     });
+
+    console.log("form list:", userId);
 
     return (
         <div className={style.list}>

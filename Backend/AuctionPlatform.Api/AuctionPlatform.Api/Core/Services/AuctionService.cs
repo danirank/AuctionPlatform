@@ -90,6 +90,7 @@ namespace AuctionPlatform.Api.Core.Services
             var dto = result.Select(a => new AuctionsGetResponseDto
             {
                 Id = a.AuctionId,
+                UserId = a.User?.Id,
                 Title = a.Title,
                 Description = a.Description,
                 StartPrice = a.StartPrice,
@@ -128,6 +129,9 @@ namespace AuctionPlatform.Api.Core.Services
             var dto = result.Select(a => new AuctionsGetResponseDto
             {
                 Id = a.AuctionId,
+                UserId = a.User?.Id,
+
+
                 Title = a.Title,
                 Description = a.Description,
                 StartPrice = a.StartPrice,
@@ -165,6 +169,9 @@ namespace AuctionPlatform.Api.Core.Services
             var dto = result.Select(a => new AuctionsGetResponseDto
             {
                 Id = a.AuctionId,
+                UserId = a.User?.Id,
+
+
                 Title = a.Title,
                 Description = a.Description,
                 StartPrice = a.StartPrice,
@@ -201,6 +208,9 @@ namespace AuctionPlatform.Api.Core.Services
             var dto = result.Select(a => new AuctionsGetResponseDto
             {
                 Id = a.AuctionId,
+                UserId = a.User?.Id,
+
+
                 Title = a.Title,
                 Description = a.Description,
                 StartPrice = a.StartPrice,

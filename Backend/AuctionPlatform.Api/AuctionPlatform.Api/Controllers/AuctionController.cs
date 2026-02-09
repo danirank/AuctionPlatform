@@ -54,7 +54,7 @@ namespace AuctionPlatform.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> AllAuctions()
         {
-            var result = await _auctionService.GetAllOpenAsync();
+            var result = await _auctionService.GetAllAsync();
 
             return Ok(result.Data);
         }

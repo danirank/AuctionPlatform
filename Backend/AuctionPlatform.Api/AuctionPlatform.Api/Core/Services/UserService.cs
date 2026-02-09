@@ -191,6 +191,28 @@ namespace AuctionPlatform.Api.Core.Services
             return Result<GetUserDto>.Ok(resultDto);
 
         }
+
+        public async Task<Result<GetUserValidationDto>> GetUserByIdDto(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return Result<GetUserValidationDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            var roles = await GetUserRoles(user);
+
+            var resDto = new GetUserValidationDto
+            {
+                UserId = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                Roles = roles
+
+
+            };
+
+            return Result<GetUserValidationDto>.Ok(resDto);
+        }
     }
 
 }

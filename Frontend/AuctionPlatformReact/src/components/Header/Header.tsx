@@ -5,6 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { useState, useEffect } from "react";
 import {authService} from "../../services/AuthService/AuthService";
+import style from "./Header.module.css";
 
 
 
@@ -22,8 +23,8 @@ useEffect(() => {
 
 
   return (
-    
-    
+    <header className={style.header}> 
+      
     <Navbar expand="md" bg="dark" variant="dark" className="px-3">
       <Container fluid>
         {/* Brand syns alltid */}
@@ -40,23 +41,22 @@ useEffect(() => {
             <Nav.Link as={RouterNavLink} to="/" end>
               Hem
             </Nav.Link>
-            <Nav.Link as={RouterNavLink} to="/register">
-              Registrera
-            </Nav.Link>
-           
           </Nav>
-        </Navbar.Collapse>
 
-        {/* Logga in syns alltid (utanför collapse) */}
+        
         <Nav>
-          <Nav.Link as={RouterNavLink} to={loggedIn ? "/my-page" : "/login"}>
-           {loggedIn ? <PrimaryButton buttonText="Min sida" /> : <PrimaryButton buttonText="Logga in" />}
+          <Nav.Link as={RouterNavLink} to={loggedIn ? "/my-page" : "/register"}>
+           {loggedIn ? <PrimaryButton buttonText="Min sida" /> : <PrimaryButton buttonText="Registrera" />}
+          </Nav.Link>
+          <Nav.Link as={RouterNavLink} to={loggedIn ? "/" : "/login"}>
+           {loggedIn ? <PrimaryButton buttonEvent={authService.clearToken} buttonText="Logga ut" /> : <PrimaryButton buttonText="Logga in" />}
           </Nav.Link>
         </Nav>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
-
     
+    </header>
   );
 }
 

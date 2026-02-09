@@ -40,6 +40,19 @@ export const authService = {
     return isTokenValid(token);
   },
 
+    getUserId(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        return payload.sub || payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"] || null;
+    } catch (e) {
+        console.error("Error decoding token:", e);
+        return null;
+    }
+    },
+
   onAuthChange(handler: () => void): () => void {
     const listener = () => handler();
 

@@ -2,6 +2,7 @@
 using AuctionPlatform.Api.Data.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AuctionPlatform.Api.Controllers
 {
@@ -45,6 +46,23 @@ namespace AuctionPlatform.Api.Controllers
             return Ok(result.Data);
         }
 
+        [Authorize]
+
+        [HttpGet("/user/{userId}")]
+
+        public async Task<IActionResult> GetUserValidation(string userId)
+        {
+            //User should only get their own credentiels - using for validation in UI 
+
+            var userIdfromToken = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userIdfromToken is null || userId != userIdfromToken)
+                return Unauthorized();
+
+            var result = await _userService.GetUserByIdDto(userId);
+
+            return Ok(result.Data);
+
+        }
 
         [Authorize(Roles = "Admin")]
         [Route("/allUsers")]

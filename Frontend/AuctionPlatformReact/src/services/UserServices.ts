@@ -1,4 +1,6 @@
 import type { RegisterUserType } from '../types/Types';
+import type { UserType } from '../types/Types';
+
 
 
 export async function RegisterUser(dto: RegisterUserType) {
@@ -36,6 +38,24 @@ return JSON.parse(bodyText);
 
 }
 
+export async function GetUser(id: string) {
+    const url = `https://localhost:7063/user/${id}`;
+
+    const user: UserType = await fetch(url,
+        {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token") ?? ""}`
+            }   
+        }
+
+
+    ).then(result => result.json());
+if (!user) {
+  throw new Error("User not found");
+}
+
+    return await user;
+}
 
 
 

@@ -11,6 +11,7 @@ namespace AuctionPlatform.Api.Core.Interfaces
         Task<Result<LoginResponseDto>> LoginAsync(LoginDto dto);
 
         Task<AppUser?> GetUserById(string id);
+        Task<Result<GetUserValidationDto>> GetUserByIdDto(string id);
 
         Task<Result<List<GetUsersDto>>> GetAll();
         Task<Result<List<GetUsersDto>>> GetAll(string search);

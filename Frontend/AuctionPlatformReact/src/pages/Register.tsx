@@ -3,7 +3,7 @@ import RegisterUserContainer from "../containers/RegisterUserContainer/RegisterU
 
 
 
-function RegisterUserPage() {
+function RegisterPage() {
 
     return (
        <>
@@ -12,4 +12,4 @@ function RegisterUserPage() {
     )
 }
 
-export default RegisterUserPage;
+export default RegisterPage;
