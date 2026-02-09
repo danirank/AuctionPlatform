@@ -1,5 +1,6 @@
 
 import AuctionContainer from "../containers/AuctionContainer/AuctionContainer";
+import NewAuctionContainer from "../containers/NewAuctionContainer/NewAuctionContainer";
 
 function HomePage() {
 
@@ -8,6 +9,7 @@ function HomePage() {
         <>
             
             <AuctionContainer/>
+            <NewAuctionContainer/>
         </>
     )
 }

@@ -14,6 +14,15 @@ export interface AuctionType {
     isDeactivatedByAdmin: boolean
 }
 
+export interface CreateAuctionType {
+    title: string,
+    description: string
+    startPrice: number,
+    imageUrl: string,
+    startAtUtc: string,
+    endAtUtc: string, 
+}
+
 export interface BidType {
     bidAmount: number,
     userName: string,

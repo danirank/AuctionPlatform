@@ -1,0 +1,113 @@
+/* CreateAuctionForm.module.css */
+
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.form {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(6px);
+}
+
+.form h2 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.form input,
+.form textarea {
+  width: 100%;
+  padding: 0.85rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  background: rgba(0, 0, 0, 0.25);
+  color: inherit;
+
+  outline: none;
+  transition: border-color 120ms ease, transform 120ms ease;
+}
+
+.form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.form input::placeholder,
+.form textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.form input:focus,
+.form textarea:focus {
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+.form input:disabled,
+.form textarea:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.formError {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 80, 80, 0.35);
+  background: rgba(255, 80, 80, 0.12);
+}
+
+.form button {
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  border: none;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: transform 120ms ease, opacity 120ms ease;
+}
+
+.form button:hover {
+  transform: translateY(-1px);
+}
+
+.form button:active {
+  transform: translateY(0);
+}
+
+.form button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Small screens */
+@media (max-width: 420px) {
+  .form {
+    padding: 1.1rem;
+    border-radius: 10px;
+  }
+
+  .form h2 {
+    font-size: 1.3rem;
+  }
+
+  .form input,
+  .form textarea {
+    padding: 0.8rem 0.85rem;
+  }
+}

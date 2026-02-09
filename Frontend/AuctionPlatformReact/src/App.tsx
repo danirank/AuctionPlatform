@@ -11,6 +11,8 @@ function App() {
 
   return (
     <>
+    <Homepage />
+    <RegisterUserPage />
     <LoginPage />
     </>
   )

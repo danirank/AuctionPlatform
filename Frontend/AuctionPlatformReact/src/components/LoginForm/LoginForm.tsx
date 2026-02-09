@@ -1,48 +1,61 @@
+// src/components/LoginForm/LoginForm.tsx
 import styles from "./LoginForm.module.css";
-import { useRef } from "react";
+
+type LoginValues = {
+  userNameOrEmail: string;
+  password: string;
+};
 
 interface Props {
-  handleSubmit: (userNameOrEmail: string, password: string) => void | Promise<void>;
+  values: LoginValues;
+  rootError: string;
+  isSubmitting: boolean;
+
+  onChange: (name: keyof LoginValues, value: string) => void;
+  onSubmit: () => void | Promise<void>;
 }
 
-function LoginForm({ handleSubmit }: Props) {
-  const userNameOrEmailRef = useRef<HTMLInputElement>(null);
-  const passwordRef = useRef<HTMLInputElement>(null);
-
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+function LoginForm({ values, rootError, isSubmitting, onChange, onSubmit }: Props) {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    const userNameOrEmail = userNameOrEmailRef.current?.value.trim() ?? "";
-    const password = passwordRef.current?.value ?? "";
-
-    await handleSubmit(userNameOrEmail, password);
+    await onSubmit();
   };
 
   return (
     <div className={styles.container}>
-      <form className={styles.form} onSubmit={onSubmit} noValidate>
+      <form className={styles.form} onSubmit={submit} noValidate>
         <h2>Logga in</h2>
+
+        {rootError && (
+          <p className={styles.formError} role="alert">
+            {rootError}
+          </p>
+        )}
 
         <input
           type="text"
+          name="userNameOrEmail"
           placeholder="Användarnamn eller email"
           className={styles.input}
-          ref={userNameOrEmailRef}
+          value={values.userNameOrEmail}
+          onChange={(e) => onChange("userNameOrEmail", e.target.value)}
           autoComplete="username"
           required
         />
 
         <input
           type="password"
+          name="password"
           placeholder="Lösenord"
           className={styles.input}
-          ref={passwordRef}
+          value={values.password}
+          onChange={(e) => onChange("password", e.target.value)}
           autoComplete="current-password"
           required
         />
 
-        <button type="submit" className={styles.button}>
-          Logga in
+        <button type="submit" className={styles.button} disabled={isSubmitting}>
+          {isSubmitting ? "Loggar in..." : "Logga in"}
         </button>
       </form>
     </div>

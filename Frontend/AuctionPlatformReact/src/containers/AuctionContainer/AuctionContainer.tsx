@@ -18,7 +18,7 @@ function AuctionContainer() {
             setAuctions(await GetAllOpenAuctions());
         };
         loadOpenAuctions();
-    }, [setAuctions]);
+    }, []);
     
    const search = async (searchTerm: string) => {
         if(searchTerm === "") {
