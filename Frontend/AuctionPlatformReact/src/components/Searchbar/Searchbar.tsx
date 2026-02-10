@@ -1,36 +1,21 @@
 import styles from "./Searchbar.module.css";
+import { useAuctions } from "../../context/AuctionProvider";
 
-interface Props {
-  searchTerm: string;
-  onSearch: (searchTerm: string) => void;
-  includeClosed: boolean;
-  onIncludeClosedChange: (value: boolean) => void;
-}
-
-function Searchbar({ searchTerm, onSearch, includeClosed, onIncludeClosedChange }: Props) {
-  const checkboxId = "includeClosed";
+function Searchbar() {
+  const { searchTerm, setSearchTerm } = useAuctions();
 
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <input
           type="text"
-          placeholder="Sök..."
+          placeholder="Sök auktion..."
           className={styles.input}
           value={searchTerm}
-          onChange={(e) => onSearch(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <span className={styles.icon}>🔍</span>
-      </div>
 
-      <div className={styles.checkbox}>
-        <input
-          type="checkbox"
-          id={checkboxId}
-          checked={includeClosed}
-          onChange={(e) => onIncludeClosedChange(e.target.checked)}
-        />
-        <label htmlFor={checkboxId}>Inkludera avslutade auktioner</label>
+        <span className={styles.icon}>🔍</span>
       </div>
     </div>
   );

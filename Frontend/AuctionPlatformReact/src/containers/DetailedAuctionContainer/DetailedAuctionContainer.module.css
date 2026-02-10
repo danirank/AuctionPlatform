@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+@media (min-width: 769px) {
+  .container {
+    flex-direction: row;
+  }
+}
+
+.container table {
+    margin: 2rem;
+}

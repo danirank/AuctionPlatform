@@ -7,23 +7,36 @@ interface Props {
 }
 
 function BidTable({ bids }: Props) {
+  
+
   const list = bids.map((b) => (
     <BidRow key={b.bidId} bid={b} />
   ));
 
   return (
-    <table className={style.table}>
-      <thead>
-        <tr>
-          <th>Budgivare</th>
-          <th>Bud</th>
-          <th>Datum</th>
-        </tr>
-      </thead>
+  <table className={style.table}>
+    <thead className={style.thead}>
+      <tr>
+        <th>Budgivare</th>
+        <th className={style.right}>Bud</th>
+        <th>Datum</th>
+      </tr>
+    </thead>
 
-      <tbody>{list}</tbody>
-    </table>
-  );
+    <tbody>
+      {bids.length === 0 ? (
+        <tr>
+          <td className={style.empty} colSpan={3}>
+            Inga bud än
+          </td>
+        </tr>
+      ) : (
+        list
+      )}
+    </tbody>
+  </table>
+);
+
 }
 
 export default BidTable;

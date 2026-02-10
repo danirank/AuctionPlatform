@@ -1,7 +1,7 @@
 
 import {GetById} from '../../services/AuctionService/AuctionsService'
 import DetailedAuctionCard from "../../components/DetailedAuctionCard/DetailedAuctionCard";
-
+import Style from './DetailedAuctionContainer.module.css'
 import { useEffect, useState } from "react"; 
 import { useParams } from "react-router";   
 import type { AuctionType } from '../../types/Types';
@@ -24,7 +24,7 @@ function DetailedAuctionContainer () {
     
     
     return (
-        <div>
+        <div className={Style.container}>
         <DetailedAuctionCard auction={auction} />
         <BidContainer auctionId={auction.id}/>
     </div>

@@ -1,18 +1,12 @@
-import type { RegisterUserType } from '../types/Types';
-import type { UserType } from '../types/Types';
+import type { RegisterUserType } from '../../types/Types';
+import type { UserType } from '../../types/Types';
+import { authService } from '../AuthService/AuthService';
 
 
 
 export async function RegisterUser(dto: RegisterUserType) {
     const url = "https://localhost:7063/api/user";
-    // const response = await fetch(url, {
-    //     method: "POST",
-    //     headers: {
-    //         "Content-Type": "application/json"
-    //     },
-    //     body: JSON.stringify(user)
-    // });
-    // return await response.json();
+    
     const res = await fetch(url, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -40,11 +34,11 @@ return JSON.parse(bodyText);
 
 export async function GetUser(id: string) {
     const url = `https://localhost:7063/user/${id}`;
-
+  const token = authService.getToken();
     const user: UserType = await fetch(url,
         {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem("token") ?? ""}`
+                Authorization: `Bearer ${token}`
             }   
         }
 

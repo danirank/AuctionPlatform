@@ -29,6 +29,7 @@ namespace AuctionPlatform.Api.Data.Repos
                 .AsNoTracking()
                 .Where(b => b.AuctionId == auctionId)
                 .Include(u => u.User)
+                .OrderByDescending(b => b.BidAmount)
                 .ToListAsync();
 
             return result;

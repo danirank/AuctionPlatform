@@ -56,3 +56,17 @@ export interface AuthContextType {
     refreshUser: () => void;
     logout: () => void;
 }
+
+export interface MakeBidType   {
+    userId: string | null, 
+    auctionId: number | null,
+    bidId: number | null,
+    amount: number | null,
+    bidDateTime: string | null
+
+}
+
+export interface MakeBidRequest {
+  auctionId: number;
+  amount: number;
+}

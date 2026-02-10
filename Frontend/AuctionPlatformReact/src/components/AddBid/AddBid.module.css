@@ -1,0 +1,40 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0.8rem;
+  padding: 0.7rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+/* Input */
+.container input {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+
+  font-size: 0.9rem;
+
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+
+  outline: none;
+}
+
+.container input:focus {
+  border-color: #6c757d;
+}
+
+/* Buttons row */
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Desktop: input + buttons på rad */

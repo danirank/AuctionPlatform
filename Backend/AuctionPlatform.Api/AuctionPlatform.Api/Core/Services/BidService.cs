@@ -61,7 +61,8 @@ namespace AuctionPlatform.Api.Core.Services
                 UserId = result.UserId ?? string.Empty,
                 AuctionId = result.AuctionId,
                 BidId = result.Id,
-                BidDateTime = result.BidTimeUtc
+                BidDateTime = result.BidTimeUtc,
+                Amount = result.BidAmount
 
 
             };

@@ -1,4 +1,5 @@
 import type { AuctionType, CreateAuctionType } from "../../types/Types";
+import { authService } from "../AuthService/AuthService";
 
 
 
@@ -46,7 +47,7 @@ export async function GetById(auctionId: number) {
 
 export async function CreateAuction(auction: CreateAuctionType) {
   const url = "https://localhost:7063/api/auction";
-  const token = localStorage.getItem("token") ?? "";
+  const token = authService.getToken();
 
   
   // 2) skapa auktion

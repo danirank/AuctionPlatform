@@ -18,7 +18,7 @@ namespace AuctionPlatform.Api.Controllers
         }
 
         [Authorize]
-        [HttpPut]
+        [HttpPost]
         public async Task<IActionResult> AddBid(AddBidDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

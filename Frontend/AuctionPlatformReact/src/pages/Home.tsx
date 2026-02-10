@@ -8,7 +8,7 @@ function HomePage() {
 
     return (
         <>
-            
+        
             <AuctionContainer/>
             
         </>
