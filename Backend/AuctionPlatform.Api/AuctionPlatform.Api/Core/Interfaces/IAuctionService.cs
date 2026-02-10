@@ -12,6 +12,6 @@ namespace AuctionPlatform.Api.Core.Interfaces
         Task<Result<List<AuctionsGetResponseDto>>> GetAllOpenAsync();
         Task<Result<List<AuctionsGetResponseDto>>> GetAllOpenAsync(string search);
         Task<Result<UpdateAuctionResponseDto>> DeActivateAuction(AdminDeactivateAuctionDto dto, int auctionId);
-
+        Task<Result<AuctionsGetResponseDto>> GetById(int auctionId);
     }
 }

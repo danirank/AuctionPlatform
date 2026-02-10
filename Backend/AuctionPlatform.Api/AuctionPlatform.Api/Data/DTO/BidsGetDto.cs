@@ -2,6 +2,7 @@
 {
     public class BidsGetDto
     {
+        public int BidId { get; set; }
         public decimal BidAmount { get; set; }
         public string? UserName { get; set; }
 

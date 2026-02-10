@@ -30,9 +30,10 @@ export interface CreateAuctionType {
 }
 
 export interface BidType {
+    bidId:number,
     bidAmount: number,
     userName: string,
-    bidTime: string
+    bidDateTime: string
 }
 
 export interface RegisterUserType {
@@ -47,4 +48,11 @@ export interface RegisterUserType {
 export interface LoginUserType {
     userName: string,
     password: string
+}
+
+export interface AuthContextType {
+    user: UserType | null;
+    isLoggedIn: boolean;
+    refreshUser: () => void;
+    logout: () => void;
 }

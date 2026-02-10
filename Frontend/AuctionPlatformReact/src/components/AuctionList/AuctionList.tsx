@@ -1,7 +1,8 @@
 import style from './AuctionList.module.css'
 import type { AuctionType } from '../../types/Types'
 import AuctionCard from '../AuctionCard/AuctionCard'
-import ClosedAuctionCard from '../ClosedAuctionCard/ClosedAuctionCard'  
+import ClosedAuctionCard from '../ClosedAuctionCard/ClosedAuctionCard'
+  
 
 
 interface Props {
@@ -20,6 +21,7 @@ function AuctionList({auctions, userId}: Props) {
     console.log("form list:", userId);
 
     return (
+        
         <div className={style.list}>
             {list}
         </div>

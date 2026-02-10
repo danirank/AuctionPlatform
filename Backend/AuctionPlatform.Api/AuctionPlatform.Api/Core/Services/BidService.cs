@@ -119,6 +119,7 @@ namespace AuctionPlatform.Api.Core.Services
 
             var dto = bidsList.Select(b => new BidsGetDto
             {
+                BidId = b.Id,
                 BidAmount = b.BidAmount,
                 BidDateTime = b.BidTimeUtc,
                 UserName = b.User?.UserName

@@ -1,4 +1,3 @@
-import { useMemo, useState } from "react";
 import styles from "./NewAuctionForm.module.css";
 import type { CreateAuctionType } from "../../types/Types";
 
@@ -6,11 +5,8 @@ interface Props {
   values: CreateAuctionType;
   rootError: string;
   isSubmitting: boolean;
-
   onChange: <K extends keyof CreateAuctionType>(name: K, value: string) => void;
-
-  // ändrad: skicka med vald fil till submit så CreateAuction kan uploada
-  onSubmit: (imageFile: File | null) => void | Promise<void>;
+  onSubmit: () => void | Promise<void>;
 }
 
 function CreateAuctionForm({
@@ -20,19 +16,10 @@ function CreateAuctionForm({
   onChange,
   onSubmit,
 }: Props) {
-  const [imageFile, setImageFile] = useState<File | null>(null);
-
-  const previewUrl = useMemo(() => {
-    if (!imageFile) return "";
-    return URL.createObjectURL(imageFile);
-  }, [imageFile]);
-
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // imageUrl i DTO blir satt efter upload i CreateAuction-helpern.
-    // Om ingen fil väljs kan man fortfarande skriva in values.imageUrl manuellt om man vill.
-    await onSubmit(imageFile);
+    await onSubmit();
   };
 
   return (
@@ -83,31 +70,8 @@ function CreateAuctionForm({
           />
         </div>
 
-        {/* NYTT: riktig filupload istället för bara url */}
         <div>
-          <label htmlFor="imageFile">Bild (jpg/png/webp)</label>
-          <input
-            id="imageFile"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={(e) => setImageFile(e.target.files?.[0] ?? null)}
-          />
-        </div>
-
-        {previewUrl && (
-          <div>
-            <label>Förhandsvisning</label>
-            <img
-              className={styles.imagePreview}
-              src={previewUrl}
-              alt="Förhandsvisning"
-            />
-          </div>
-        )}
-
-        {/* Valfritt: behåll om du vill kunna klistra in URL också */}
-        <div>
-          <label htmlFor="imageUrl">Bild-URL (valfritt)</label>
+          <label htmlFor="imageUrl">Bild-URL</label>
           <input
             id="imageUrl"
             type="text"

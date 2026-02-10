@@ -1,25 +1,18 @@
 import PrimaryButton from "../Buttons/PrimaryButton";
-import { NavLink as RouterNavLink } from "react-router-dom";
+import { NavLink as RouterNavLink } from "react-router";
 import Container from "react-bootstrap/Container";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import { useState, useEffect } from "react";
-import {authService} from "../../services/AuthService/AuthService";
 import style from "./Header.module.css";
-
+import Logo from "../Logo/Logo";
+import { useAuth } from "../../context/AuthProvider";
 
 
 
 function Header() {
 
-const [loggedIn, setLoggedIn] = useState(false);
+const { isLoggedIn, logout } = useAuth();
 
-useEffect(() => {
-  const sync = async () => setLoggedIn(await authService.isLoggedIn());
-
-  sync();
-  return authService.onAuthChange(sync);
-}, []);
 
 
   return (
@@ -27,9 +20,9 @@ useEffect(() => {
       
     <Navbar expand="md" bg="dark" variant="dark" className="px-3">
       <Container fluid>
-        {/* Brand syns alltid */}
+        
         <Navbar.Brand as={RouterNavLink} to="/">
-          MyAuctionPlatform
+          <Logo />
         </Navbar.Brand>
 
         {/* Hamburger */}
@@ -45,11 +38,11 @@ useEffect(() => {
 
         
         <Nav>
-          <Nav.Link as={RouterNavLink} to={loggedIn ? "/my-page" : "/register"}>
-           {loggedIn ? <PrimaryButton buttonText="Min sida" /> : <PrimaryButton buttonText="Registrera" />}
+          <Nav.Link as={RouterNavLink} to={isLoggedIn ? "/my-page" : "/register"}>
+           {isLoggedIn ? <PrimaryButton buttonText="Min sida" /> : <PrimaryButton buttonText="Registrera" />}
           </Nav.Link>
-          <Nav.Link as={RouterNavLink} to={loggedIn ? "/" : "/login"}>
-           {loggedIn ? <PrimaryButton buttonEvent={authService.clearToken} buttonText="Logga ut" /> : <PrimaryButton buttonText="Logga in" />}
+          <Nav.Link as={RouterNavLink} to={isLoggedIn ? "/" : "/login"}>
+           {isLoggedIn ? <PrimaryButton buttonEvent={logout} buttonText="Logga ut" /> : <PrimaryButton buttonText="Logga in" />}
           </Nav.Link>
         </Nav>
         </Navbar.Collapse>

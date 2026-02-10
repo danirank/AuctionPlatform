@@ -19,6 +19,13 @@ namespace AuctionPlatform.Api.Controllers
 
         #region Get
 
+        [HttpGet("/auctions/{auctionId}")]
+        public async Task<IActionResult> GetById(int auctionId)
+        {
+            var result = await _auctionService.GetById(auctionId);
+
+            return Ok(result.Data);
+        }
 
         [Route("/open/search")]
         [HttpGet]
@@ -40,7 +47,6 @@ namespace AuctionPlatform.Api.Controllers
         }
 
         [Route("/all/search")]
-
         [HttpGet]
         public async Task<IActionResult> SearchAllAuctions(string search)
         {

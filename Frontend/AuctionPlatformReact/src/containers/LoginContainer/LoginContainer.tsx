@@ -1,18 +1,18 @@
-
 import { useState } from "react";
+import { useNavigate } from "react-router";
 import LoginForm from "../../components/LoginForm/LoginForm";
 import { LoginUser } from "../../services/AuthService/AuthService";
-import { useNavigate } from "react-router-dom";
-
-
+import { useAuth } from "../../context/AuthProvider";
 
 type LoginValues = {
   userNameOrEmail: string;
   password: string;
 };
 
-
 function LoginContainer() {
+  const { refreshUser } = useAuth();
+  const navigate = useNavigate();
+
   const [values, setValues] = useState<LoginValues>({
     userNameOrEmail: "",
     password: "",
@@ -20,7 +20,6 @@ function LoginContainer() {
 
   const [rootError, setRootError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-    const navigate = useNavigate();
 
   const handleChange = (name: keyof LoginValues, value: string) => {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -29,23 +28,25 @@ function LoginContainer() {
 
   const handleSubmit = async () => {
     setRootError("");
+    setIsSubmitting(true);
 
     try {
-
-      setIsSubmitting(true);
-
-      const loginResult = await LoginUser(values.userNameOrEmail.trim(), values.password);
+      const loginResult = await LoginUser(
+        values.userNameOrEmail.trim(),
+        values.password
+      );
 
       if (!loginResult) {
-        setRootError("Inloggning misslyckades. Kontrollera dina uppgifter och försök igen.");
+        setRootError(
+          "Inloggning misslyckades. Kontrollera dina uppgifter och försök igen."
+        );
         return;
       }
-      
-      console.log("Login successful! Token:", loginResult);
-        navigate("/", { replace: true });
-      
 
-      // TODO: navigera vidare (ex: /) och/eller spara token i auth-state
+      // Viktigt: AuthService sparar token → nu uppdaterar vi global auth-state
+      await refreshUser();
+
+      navigate("/", { replace: true });
     } catch (err) {
       setRootError("Något gick fel. Försök igen.");
       console.error("Login error:", err);

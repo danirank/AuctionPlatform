@@ -3,6 +3,7 @@ using AuctionPlatform.Api.Data.Constants;
 using AuctionPlatform.Api.Data.DTO;
 using AuctionPlatform.Api.Data.Entities;
 using AuctionPlatform.Api.Data.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuctionPlatform.Api.Core.Services
 {
@@ -281,6 +282,46 @@ namespace AuctionPlatform.Api.Core.Services
 
 
             return Result<UpdateAuctionResponseDto>.Ok(responseDto);
+
+        }
+
+        public async Task<Result<AuctionsGetResponseDto>> GetById(int auctionId)
+        {
+            var auction = await _repo.FindByIdAsync(auctionId);
+
+            if (auction is null)
+                return Result<AuctionsGetResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
+
+            var highestBid = await _bidRepo.HighestBidByAuctionId(auctionId);
+            var highestBidDto = new BidsGetDto();
+
+            if (highestBid is not null)
+            {
+
+                highestBidDto.UserName = highestBid.User?.UserName;
+                highestBidDto.BidAmount = highestBid.BidAmount;
+                highestBidDto.BidDateTime = highestBid.BidTimeUtc;
+            }
+
+
+            var responseDto = new AuctionsGetResponseDto
+            {
+                Id = auction.AuctionId,
+
+                UserId = auction.UserId,
+                Title = auction.Title,
+                Description = auction.Description,
+
+                StartPrice = auction.StartPrice,
+                HighestBid = highestBidDto,
+                ImageUrl = auction.ImageUrl,
+                IsOpen = auction.IsOpen,
+                StartDateUtc = auction.StartAtUtc,
+                EndDateUtc = auction.EndAtUtc,
+                IsDeactivatedByAdmin = auction.IsDeactivatedByAdmin
+            };
+
+            return Result<AuctionsGetResponseDto>.Ok(responseDto);
 
         }
     }
