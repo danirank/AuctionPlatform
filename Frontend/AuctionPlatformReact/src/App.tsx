@@ -6,9 +6,11 @@ import RegisterPage from './pages/Register';
 import LoginPage from './pages/Login';
 import { Route, Routes } from 'react-router';
 import Header from './components/Header/Header';
-import MyPage from './pages/MyPage';
+import MyPage from './pages/MyPage/MyPage';
 import NotFound from './pages/NotFound';
 import DetailedAuction from './pages/DetailedAuction';
+
+
 
 
 function App() {
@@ -21,9 +23,9 @@ function App() {
       <Route path="/" element={<Homepage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/my-page" element={<MyPage />} />
       <Route path='/auction/:id' element={<DetailedAuction />} />
-      <Route path="*" element={<NotFound />} />
+      <Route path="/mypage/*" element={<MyPage />} />
+      <Route path="*" element={<NotFound />}/>
     </Routes>
     </>
   )

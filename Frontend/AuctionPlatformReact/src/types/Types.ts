@@ -52,7 +52,7 @@ export interface LoginUserType {
 
 export interface AuthContextType {
     user: UserType | null;
-    isLoggedIn: boolean;
+    isLoggedIn: boolean | null;
     refreshUser: () => void;
     logout: () => void;
 }
@@ -69,4 +69,22 @@ export interface MakeBidType   {
 export interface MakeBidRequest {
   auctionId: number;
   amount: number;
+}
+
+export interface UpdateAuctionType {
+    title?: string,
+    description?: string
+    startPrice?: number,
+    imageUrl?: string,
+    newEndDateUtc?: string, 
+}
+
+export interface AuctionFormValues {
+  title: string;
+  description: string;
+  startPrice: number;
+  imageUrl: string;
+  startAtUtc: string;
+  endAtUtc: string;
+  hasBid: boolean
 }

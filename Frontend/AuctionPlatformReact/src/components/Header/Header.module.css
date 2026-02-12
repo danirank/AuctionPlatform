@@ -1,15 +1,10 @@
 .header {
   position: sticky;
-  top: 0;            /* <- viktigast, annars “fastnar” den inte */
+  top: 0;            
   z-index: 2000;
   width: 100%;
-  background-color: aqua; /* eller en riktig färg */
+  background-color: aqua; 
 }
 
-/* container ska INTE vara sticky, bara layout */
 
 
-/* (valfritt) om du vill undvika att innehåll syns igenom vid scroll */
-.header {
-  background-color: aqua;
-}

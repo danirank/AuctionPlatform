@@ -2,6 +2,11 @@ import style from "./DetailedAuctionCard.module.css";
 import type { AuctionType } from "../../types/Types";
 import { getTimeLeft } from "../../helpers/timeHelpers";
 import placeholder from '../../assets/pageIcon.png'
+import { useAuth } from "../../context/AuthProvider";
+import PrimaryButton from "../Buttons/PrimaryButton";
+import { useNavigate } from "react-router";
+
+
 
 
 
@@ -11,8 +16,17 @@ interface Props {
 }
 
 function DetailedAuctionCard({ auction}: Props) {
-
+    const {user } = useAuth(); 
     
+    const navigate = useNavigate();
+    
+    const isOwner = user?.userId == auction.userId; 
+
+  const goToUpdateAuction = () => navigate(`/mypage/auction/${auction.id}/update`);
+
+
+
+
 
     const timeLeft = getTimeLeft(auction.endDateUtc);
     const imageUrl = auction.imageUrl ? auction.imageUrl : placeholder
@@ -35,7 +49,10 @@ function DetailedAuctionCard({ auction}: Props) {
 <p>
   <strong>Slutar om</strong>
   <span>{timeLeft}</span>
-</p>        
+</p>    
+
+{isOwner ? <PrimaryButton buttonEvent={goToUpdateAuction} buttonText="Uppdatera auktion" /> : ""}
+
         </div>
     )
 

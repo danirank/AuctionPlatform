@@ -1,31 +1,41 @@
-import styles from "./NewAuctionForm.module.css";
-import type { CreateAuctionType } from "../../types/Types";
+
+import styles from "./AuctionForm.module.css";
+import type { AuctionFormValues } from "../../types/Types";
+
 
 interface Props {
-  values: CreateAuctionType;
+  values: AuctionFormValues;
   rootError: string;
   isSubmitting: boolean;
-  onChange: <K extends keyof CreateAuctionType>(name: K, value: string) => void;
+  title: string;
+  submitText: string;
+
+  onChange: <K extends keyof AuctionFormValues>(name: K, value: string) => void;
   onSubmit: () => void | Promise<void>;
 }
 
-function CreateAuctionForm({
+function AuctionForm({
   values,
   rootError,
   isSubmitting,
+  title,
+  submitText,
   onChange,
   onSubmit,
 }: Props) {
+ 
   const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     await onSubmit();
   };
 
+ 
+
+  
   return (
     <div className={styles.container}>
       <form className={styles.form} onSubmit={submit} noValidate>
-        <h2>Skapa auktion</h2>
+        <h2>{title}</h2>
 
         {rootError && (
           <p className={styles.formError} role="alert">
@@ -38,7 +48,6 @@ function CreateAuctionForm({
           <input
             id="title"
             type="text"
-            placeholder="Titel"
             value={values.title}
             onChange={(e) => onChange("title", e.target.value)}
             required
@@ -49,24 +58,23 @@ function CreateAuctionForm({
           <label htmlFor="description">Beskrivning</label>
           <textarea
             id="description"
-            placeholder="Beskrivning"
             value={values.description}
             onChange={(e) => onChange("description", e.target.value)}
             required
           />
         </div>
 
-        <div>
+        <div className={values.hasBid ? styles.disabled : ""} >
           <label htmlFor="startPrice">Startpris</label>
           <input
             id="startPrice"
             type="number"
-            placeholder="Startpris"
-            value={values.startPrice}
-            onChange={(e) => onChange("startPrice", e.target.value)}
             min="0"
             step="0.01"
+            value={values.startPrice}
+            onChange={(e) => onChange("startPrice", e.target.value)}
             required
+            disabled = {values.hasBid}
           />
         </div>
 
@@ -75,13 +83,12 @@ function CreateAuctionForm({
           <input
             id="imageUrl"
             type="text"
-            placeholder="Bild-URL"
             value={values.imageUrl}
             onChange={(e) => onChange("imageUrl", e.target.value)}
           />
         </div>
 
-        <div>
+        <div >
           <label htmlFor="startAtUtc">Startdatum</label>
           <input
             id="startAtUtc"
@@ -104,11 +111,11 @@ function CreateAuctionForm({
         </div>
 
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Skapar..." : "Skapa auktion"}
+          {isSubmitting ? `${submitText}...` : submitText}
         </button>
       </form>
     </div>
   );
 }
 
-export default CreateAuctionForm;
+export default AuctionForm;

@@ -1,5 +1,7 @@
 import styles from "./Searchbar.module.css";
 import { useAuctions } from "../../context/AuctionProvider";
+import IncludeClosedCheckbox from "../../components/IncludeClosedCheckbox/IncludeClosedCheckbox";
+
 
 function Searchbar() {
   const { searchTerm, setSearchTerm } = useAuctions();
@@ -17,7 +19,11 @@ function Searchbar() {
 
         <span className={styles.icon}>🔍</span>
       </div>
+      <div className={styles.checkbox}>
+        <IncludeClosedCheckbox text="Inkludera avslutade" />
     </div>
+    </div>
+
   );
 }
 

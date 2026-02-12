@@ -246,8 +246,6 @@ namespace AuctionPlatform.Api.Core.Services
         {
             var bids = await _bidRepo.BidsByAuctionId(auctionId) ?? new List<Bid>();
 
-            if (bids.Any() && dto.StartPrice is not null)
-                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.BidExistsOnPriceUpdate);
 
             var entity = await _repo.FindByIdAsync(auctionId);
 
@@ -256,6 +254,9 @@ namespace AuctionPlatform.Api.Core.Services
 
             if (entity.UserId != userId)
                 return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.UpdateElsesAuction);
+
+            if (bids.Any() && dto.StartPrice is not null)
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.BidExistsOnPriceUpdate);
 
             entity.Title = dto.Title ?? entity.Title;
             entity.Description = dto.Description ?? entity.Description;

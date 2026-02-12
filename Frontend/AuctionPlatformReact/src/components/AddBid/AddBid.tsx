@@ -7,7 +7,7 @@ import { useAuctions } from "../../context/AuctionProvider";
 interface Props {
   auctionId: number;
   onCancel: () => void;
-  onSuccess?: () => void; // stäng form / UI-grej
+  onSuccess?: () => void; 
 }
 
 function AddBid({ auctionId, onCancel, onSuccess }: Props) {
@@ -29,8 +29,8 @@ function AddBid({ auctionId, onCancel, onSuccess }: Props) {
 
     try {
       await MakeBid({ auctionId, amount }); // POST
-      await reload();                      // ✅ uppdatera listan (renderar om)
-      onSuccess?.();                       // ✅ stäng / reset i parent
+      await reload();                      
+      onSuccess?.();                       
     } catch (e: any) {
       setError(e?.message ?? "Kunde inte lägga bud");
     } finally {

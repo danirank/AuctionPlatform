@@ -1,16 +1,15 @@
 .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   position: sticky;
-  top: 0;
-  z-index: 1000;
-
+  top: 6rem;
+  z-index: 2001;
   width: min(600px, 92vw);
   margin: 0 auto;
- 
-
- 
-
-  /* för .icon */
   position: sticky;
+  background-color: #86b7fe;
+  width: 100%;
 }
 
 .wrapper {
@@ -32,18 +31,18 @@
   color: #000000;
 }
 
-/* Hover */
+
 .input:hover {
   border-color: #86b7fe;
 }
 
-/* Focus */
+
 .input:focus {
   border-color: #0d6efd;
   box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
 }
 
-/* Icon */
+
 .icon {
   position: absolute;
   right: 0.9rem;
@@ -53,5 +52,3 @@
   color: #6c757d;
   pointer-events: none;
 }
-
-

@@ -1,64 +1,72 @@
-
+// src/containers/CreateAuctionContainer/CreateAuctionContainer.tsx
 import { useState } from "react";
-import CreateAuctionForm from "../../components/NewAuctionForm/NewAuctionForm";
-import type { CreateAuctionType } from "../../types/Types";
-import { CreateAuction } from "../../services/AuctionService/AuctionsService";
+import { useNavigate } from "react-router";
+import AuctionForm from "../../components/AuctionForm/AuctionForm";
+import type { AuctionFormValues, CreateAuctionType } from "../../types/Types";
+import { useAuctions } from "../../context/AuctionProvider";
 
 function CreateAuctionContainer() {
-  const [values, setValues] = useState<CreateAuctionType>({
+  const { createAuction } = useAuctions();
+  const navigate = useNavigate();
+
+  const [values, setValues] = useState<AuctionFormValues>({
     title: "",
     description: "",
     startPrice: 0,
     imageUrl: "",
     startAtUtc: "",
     endAtUtc: "",
+    hasBid: false
   });
 
   const [rootError, setRootError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = <K extends keyof CreateAuctionType>(
-    name: K,
-    value: string
-  ) => {
+  const handleChange = <K extends keyof AuctionFormValues>(name: K, value: string) => {
     setValues((prev) => ({
       ...prev,
       [name]: name === "startPrice" ? Number(value) : value,
     }));
-
     setRootError("");
   };
 
   const handleSubmit = async () => {
     setRootError("");
+    setIsSubmitting(true);
 
     try {
-      setIsSubmitting(true);
+      const dto: CreateAuctionType = {
+        title: values.title,
+        description: values.description,
+        startPrice: values.startPrice,
+        imageUrl: values.imageUrl,
+        startAtUtc: values.startAtUtc,
+        endAtUtc: values.endAtUtc,
+      };
 
-      const result = await CreateAuction(values);
+      const created = await createAuction(dto);
 
-      if (!result) {
+      if (!created) {
         setRootError("Kunde inte skapa auktionen. Försök igen.");
         return;
       }
 
-      
-
-      // TODO: navigera bort / reset form / refetch auctions
-      alert("Auktion skapad!");
+      navigate("/mypage/auctions");
     } catch (err) {
-      setRootError("Något gick fel. Försök igen.");
       console.error("Create auction error:", err);
+      setRootError("Något gick fel. Försök igen.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <CreateAuctionForm
+    <AuctionForm
       values={values}
       rootError={rootError}
       isSubmitting={isSubmitting}
+      title="Skapa auktion"
+      submitText="Skapa"
       onChange={handleChange}
       onSubmit={handleSubmit}
     />

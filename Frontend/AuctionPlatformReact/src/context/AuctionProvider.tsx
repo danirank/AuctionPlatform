@@ -1,11 +1,15 @@
+// src/context/AuctionProvider.tsx (uppdatera provider för create + update med rätt DTO-typer)
 import { createContext, useContext, useEffect, useState } from "react";
-import type { AuctionType } from "../types/Types";
+import type { AuctionType, CreateAuctionType, UpdateAuctionType } from "../types/Types";
 
 import {
   GetAllAuctions,
   GetAllAuctionsSearch,
   GetAllOpenAuctions,
-  GetOpenAuctionsSearch
+  GetOpenAuctionsSearch,
+  CreateAuction,
+  UpdateAuction,
+
 } from "../services/AuctionService/AuctionsService";
 
 interface AuctionContextType {
@@ -18,12 +22,15 @@ interface AuctionContextType {
   setIncludeClosed: (v: boolean) => void;
 
   reload: () => Promise<void>;
+
+  createAuction: (values: CreateAuctionType) => Promise<AuctionType | null>;
+  updateAuction: (id: number, values: UpdateAuctionType) => Promise<AuctionType | null>;
+
 }
 
 const AuctionContext = createContext<AuctionContextType | null>(null);
 
 export function AuctionProvider({ children }: { children: React.ReactNode }) {
-
   const [auctions, setAuctions] = useState<AuctionType[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [includeClosed, setIncludeClosed] = useState(false);
@@ -41,9 +48,34 @@ export function AuctionProvider({ children }: { children: React.ReactNode }) {
         : await GetOpenAuctionsSearch(term);
 
       setAuctions(result);
-
     } catch (err) {
       console.error("Failed to load auctions:", err);
+    }
+  };
+
+  
+
+  const createAuction = async (values: CreateAuctionType) => {
+    try {
+      const created = await CreateAuction(values);
+      if (!created) return null;
+      await load();
+      return created;
+    } catch (err) {
+      console.error("Failed to create auction:", err);
+      return null;
+    }
+  };
+
+  const updateAuction = async (id: number, values: UpdateAuctionType) => {
+    try {
+      const updated = await UpdateAuction(id, values);
+      if (!updated) return null;
+      await load();
+      return updated;
+    } catch (err) {
+      console.error("Failed to update auction:", err);
+      return null;
     }
   };
 
@@ -59,7 +91,9 @@ export function AuctionProvider({ children }: { children: React.ReactNode }) {
         includeClosed,
         setSearchTerm,
         setIncludeClosed,
-        reload: load
+        reload: load,
+        createAuction,
+        updateAuction,
       }}
     >
       {children}

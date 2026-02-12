@@ -56,10 +56,20 @@ namespace AuctionPlatform.Api.Controllers
 
         [Route("/highest")]
         [HttpGet]
-        public async Task<IActionResult> GetHighestBidByAuction(int auctionId)
+        public async Task<IActionResult> GetHighestBidByAuction([FromQuery] int auctionId)
         {
             var result = await _bidService.GetHighestBidsForAuction(auctionId);
+
+
+            if (!result.IsSucces)
+                return BadRequest(result.Error);
+
+
+            if (result.Data is null)
+                return NoContent();
+
             return Ok(result.Data);
         }
+
     }
 }

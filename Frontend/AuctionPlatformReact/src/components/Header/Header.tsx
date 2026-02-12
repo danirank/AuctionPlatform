@@ -38,7 +38,7 @@ const { isLoggedIn, logout } = useAuth();
 
         
         <Nav>
-          <Nav.Link as={RouterNavLink} to={isLoggedIn ? "/my-page" : "/register"}>
+          <Nav.Link as={RouterNavLink} to={isLoggedIn ? "/mypage" : "/register"}>
            {isLoggedIn ? <PrimaryButton buttonText="Min sida" /> : <PrimaryButton buttonText="Registrera" />}
           </Nav.Link>
           <Nav.Link as={RouterNavLink} to={isLoggedIn ? "/" : "/login"}>

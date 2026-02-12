@@ -27,6 +27,8 @@ namespace AuctionPlatform.Api.Controllers
             return Ok(result.Data);
         }
 
+
+
         [Route("/open/search")]
         [HttpGet]
         public async Task<IActionResult> SearchOpenAuctions(string search)
@@ -37,7 +39,6 @@ namespace AuctionPlatform.Api.Controllers
         }
 
         [Route("/open/all")]
-
         [HttpGet]
         public async Task<IActionResult> GetAllOpenAuctions()
         {
@@ -88,7 +89,6 @@ namespace AuctionPlatform.Api.Controllers
         #region Put
         [Authorize]
         [HttpPut]
-
         public async Task<IActionResult> UpdateAuction(int auctionId, UpdateAuctionDto dto)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

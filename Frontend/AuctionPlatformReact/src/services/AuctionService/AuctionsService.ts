@@ -1,4 +1,4 @@
-import type { AuctionType, CreateAuctionType } from "../../types/Types";
+import type { AuctionType, CreateAuctionType, UpdateAuctionType } from "../../types/Types";
 import { authService } from "../AuthService/AuthService";
 
 
@@ -70,6 +70,35 @@ const responseData = await response.json();
 console.log("CreateAuction response:", responseData);
 
 return responseData;
+}
+
+
+export async function UpdateAuction(
+    auctionId: number,
+    auction: UpdateAuctionType
+) {
+  const url = `https://localhost:7063/api/Auction?auctionId=${auctionId}`;
+  const token = authService.getToken();
+
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(auction),
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error("UpdateAuction failed:", response.status, errorText);
+    throw new Error(`Failed to update auction: ${errorText}`);
+  }
+
+  const responseData = await response.json();
+  console.log("UpdateAuction response:", responseData);
+
+  return responseData;
 }
 
 
