@@ -53,7 +53,9 @@ namespace AuctionPlatform.Api.Data.Repos
         public async Task<Auction?> FindByIdAsync(int auctionId)
         {
 
-            return await _context.Auctions.FirstOrDefaultAsync(a => a.AuctionId == auctionId);
+            return await _context.Auctions
+                .Include(u => u.User)
+                .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
         }
         public async Task<bool> SaveChangesAsync()
         {

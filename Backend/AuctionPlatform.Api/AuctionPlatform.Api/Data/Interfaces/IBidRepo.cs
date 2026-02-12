@@ -13,5 +13,7 @@ namespace AuctionPlatform.Api.Data.Interfaces
         Task<List<Bid>> BidsByAuctionId(int auctionId);
 
         Task<Bid?> HighestBidByAuctionId(int auctionId);
+
+        Task<List<Bid>> GetBidByUserId(string userId);
     }
 }

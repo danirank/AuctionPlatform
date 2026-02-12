@@ -6,6 +6,10 @@
         public decimal BidAmount { get; set; }
         public string? UserName { get; set; }
 
+        public string? UserId { get; set; }
+
+        public int AuctionId { get; set; }
+
         public DateTime BidDateTime { get; set; }
     }
 }

@@ -29,3 +29,41 @@
   border-bottom: 2px solid #0d6efd;
   padding-bottom: 0.2rem;
 }
+
+/* Dropdown wrapper */
+.dropdown {
+  position: relative;
+}
+
+/* Knappen ska se ut som länk */
+.dropdownBtn {
+  background: none;
+  border: none;
+  color: #555;
+  font-weight: 500;
+  font-size: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.dropdownBtn:hover {
+  color: #000;
+}
+
+/* Undermenyn */
+.submenu {
+  position: absolute;
+  top: 120%;
+  left: 0;
+  background: #fff;
+  list-style: none;
+  padding: 0.3rem 0;
+  margin: 0;
+  min-width: 170px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+}

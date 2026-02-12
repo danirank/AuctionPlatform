@@ -1,6 +1,6 @@
 import BidTable from "../../components/BidTable/BidTable";
 import { useState, useEffect } from "react";
-import { GetBidsByAuctionId } from "../../services/BidService/BidService";
+import { DeleteBid, GetBidsByAuctionId } from "../../services/BidService/BidService";
 import type { BidType } from '../../types/Types'
 
 interface BidContainerProps {
@@ -8,7 +8,7 @@ interface BidContainerProps {
 }
 
 function BidContainer({ auctionId }: BidContainerProps) {
-// Här vill jag hämta bids för en specifik auktion på id. Använd 
+
 const [bids, setBids] = useState<BidType[]>([]);
 
 useEffect(() => {
@@ -27,8 +27,18 @@ loadBids();
 
 },[auctionId]);
 
+const handleDelete = async (bidId: number, auctionId: number) => {
+   const deleted = await DeleteBid({ bidId, auctionId });
 
-    return <BidTable bids= {bids} />
+   if(!deleted)
+    return;
+    // rerender direkt:
+    setBids(prev => prev.filter(b => b.bidId !== bidId));
+    // (alternativt: await reload från API om du vill)
+  };
+
+
+    return <BidTable  bids= {bids} onDelete={handleDelete} />
 }
 
 

@@ -82,6 +82,7 @@ namespace AuctionPlatform.Api.Core.Services
                 new Claim(ClaimTypes.Name, user.UserName ?? ""),
                 new Claim(ClaimTypes.Email, user.Email ?? ""),
 
+
                 };
 
             var userRoles = await GetUserRoles(user);
@@ -118,6 +119,10 @@ namespace AuctionPlatform.Api.Core.Services
             if (userEntity is null)
                 return Result<LoginResponseDto>.Fail(ErrorMessages.UserNotFound);
 
+            if (!userEntity.IsActiveUser)
+                return Result<LoginResponseDto>.Fail(ErrorMessages.DeActivatedByAdmin);
+
+
             var result = await _userManager.CheckPasswordAsync(userEntity, dto.Password);
 
             if (!result)
@@ -125,7 +130,7 @@ namespace AuctionPlatform.Api.Core.Services
 
             var token = await GenerateToken(userEntity);
 
-            var responseDto = new LoginResponseDto { Token = token };
+            var responseDto = new LoginResponseDto { Token = token, IsActive = userEntity.IsActiveUser };
 
             return Result<LoginResponseDto>.Ok(responseDto);
         }
@@ -144,6 +149,7 @@ namespace AuctionPlatform.Api.Core.Services
             {
                 UserId = u.Id,
                 UserName = u.UserName,
+                UserEmail = u.Email,
                 IsActive = u.IsActiveUser
 
             }).ToList();

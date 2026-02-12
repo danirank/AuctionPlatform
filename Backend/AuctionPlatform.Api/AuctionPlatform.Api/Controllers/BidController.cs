@@ -43,7 +43,7 @@ namespace AuctionPlatform.Api.Controllers
 
             var result = await _bidService.DeleteAsync(dto, userId);
 
-            return result.IsSucces ? Ok(result.Data?.Message) : BadRequest(result.Error);
+            return result.IsSucces ? Ok(result.Data) : BadRequest(result.Error);
 
         }
 
@@ -68,6 +68,18 @@ namespace AuctionPlatform.Api.Controllers
             if (result.Data is null)
                 return NoContent();
 
+            return Ok(result.Data);
+        }
+
+        [Authorize]
+        [HttpGet("/bids/user")]
+        public async Task<IActionResult> GetBidsByUser()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId is null)
+                return Unauthorized();
+
+            var result = await _bidService.GetBidsByUser(userId);
             return Ok(result.Data);
         }
 

@@ -31,9 +31,11 @@ export interface CreateAuctionType {
 
 export interface BidType {
     bidId:number,
+    userId:string,
     bidAmount: number,
+    bidDateTime: string,
     userName: string,
-    bidDateTime: string
+    auctionId: number
 }
 
 export interface RegisterUserType {
@@ -87,4 +89,27 @@ export interface AuctionFormValues {
   startAtUtc: string;
   endAtUtc: string;
   hasBid: boolean
+}
+
+export interface UserTableType {
+    userId: string, 
+    userName :string, 
+    userEmail:string, 
+    isActive: boolean
+
+}
+
+export interface SetUserStatusType {
+    userId: string, 
+    isActive: boolean
+}
+
+export interface SetAuctionStatusType {
+    auctionId: number, 
+    isDeactivatedByAdmin: boolean
+}
+
+export interface DeleteBidType {
+    bidId: number, 
+    auctionId: number
 }

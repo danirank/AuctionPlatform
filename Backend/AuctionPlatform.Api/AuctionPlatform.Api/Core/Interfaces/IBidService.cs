@@ -10,6 +10,6 @@ namespace AuctionPlatform.Api.Core.Interfaces
         Task<Result<List<BidsGetDto>>> GetBidsForAuction(int auctionId);
 
         Task<Result<BidsGetDto>> GetHighestBidsForAuction(int auctionId);
-
+        Task<Result<List<BidsGetDto>>> GetBidsByUser(string userId);
     }
 }

@@ -1,4 +1,5 @@
-import type { AuctionType, CreateAuctionType, UpdateAuctionType } from "../../types/Types";
+
+import type { AuctionType, CreateAuctionType, SetAuctionStatusType, UpdateAuctionType } from "../../types/Types";
 import { authService } from "../AuthService/AuthService";
 
 
@@ -99,6 +100,30 @@ export async function UpdateAuction(
   console.log("UpdateAuction response:", responseData);
 
   return responseData;
+}
+
+export async function SetAuctionStatus ({auctionId, isDeactivatedByAdmin }: SetAuctionStatusType) {
+    //console.log(isDeactivatedByAdmin, "från service")
+    const url = `https://localhost:7063/deactivate?auctionId=${auctionId}`
+  const token = authService.getToken();
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type":"application/json",
+      Authorization: `Bearer ${token}`
+    }, 
+    body: JSON.stringify({isDeactivatedByAdmin})
+      
+  });
+    //console.log(isDeactivatedByAdmin, "från service")
+
+
+ if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(errorText || `Request failed: ${response.status}`);
+  }
+
+  return await response.json();
 }
 
 

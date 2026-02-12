@@ -17,4 +17,4 @@ console.log(user,)
     </>)
 } 
 
-export default MyPageAuctions;
+export default MyPageAuctions;  

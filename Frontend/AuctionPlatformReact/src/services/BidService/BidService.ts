@@ -1,4 +1,5 @@
-import type { BidType, MakeBidRequest, MakeBidType } from "../../types/Types";
+
+import type { BidType, DeleteBidType, MakeBidRequest, MakeBidType } from "../../types/Types";
 import { authService } from "../AuthService/AuthService";
 
 
@@ -7,6 +8,24 @@ export async function GetBidsByAuctionId(auctionId: number) {
     const bids: BidType[] = await fetch(url).then(result => result.json());
     return await bids;
 }
+
+export async function GetBidsByUserId() {
+  const url = `https://localhost:7063/bids/user`;
+  const token = authService.getToken();
+
+  const response = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch bids: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
 
 export async function GetHighestBidByAuctionId(
   auctionId: number
@@ -49,3 +68,23 @@ export async function MakeBid(
   return await response.json();
 }
 
+export async function DeleteBid({bidId, auctionId}: DeleteBidType) {
+  const url= `https://localhost:7063/api/bid`
+  const token = authService.getToken(); 
+
+  const result = await fetch(url, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
+
+    }, 
+    body : JSON.stringify({bidId, auctionId})
+  })
+
+  if (result.ok)
+    return true; 
+
+  return false; 
+  
+}

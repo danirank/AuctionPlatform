@@ -114,6 +114,22 @@ namespace AuctionPlatform.Api.Core.Services
             return Result<DeleteBidResponseDto>.Ok(responseDto);
         }
 
+        public async Task<Result<List<BidsGetDto>>> GetBidsByUser(string userId)
+        {
+            var bids = await _bidRepo.GetBidByUserId(userId);
+
+            var resultList = bids.Select(b => new BidsGetDto
+            {
+                BidId = b.Id,
+                UserId = b.UserId,
+                BidAmount = b.BidAmount,
+                BidDateTime = b.BidTimeUtc,
+                UserName = b.User?.UserName
+            }).ToList();
+
+            return Result<List<BidsGetDto>>.Ok(resultList);
+        }
+
         public async Task<Result<List<BidsGetDto>>> GetBidsForAuction(int auctionId)
         {
             var bidsList = await _bidRepo.BidsByAuctionId(auctionId);
@@ -121,9 +137,11 @@ namespace AuctionPlatform.Api.Core.Services
             var dto = bidsList.Select(b => new BidsGetDto
             {
                 BidId = b.Id,
+                UserId = b.UserId,
                 BidAmount = b.BidAmount,
                 BidDateTime = b.BidTimeUtc,
-                UserName = b.User?.UserName
+                UserName = b.User?.UserName,
+                AuctionId = b.AuctionId
             }).ToList();
 
             return Result<List<BidsGetDto>>.Ok(dto);

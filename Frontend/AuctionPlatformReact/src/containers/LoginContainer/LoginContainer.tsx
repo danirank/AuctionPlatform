@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import {  useNavigate } from "react-router";
 import LoginForm from "../../components/LoginForm/LoginForm";
 import { LoginUser } from "../../services/AuthService/AuthService";
 import { useAuth } from "../../context/AuthProvider";
@@ -36,14 +36,17 @@ function LoginContainer() {
         values.password
       );
 
-      if (!loginResult) {
-        setRootError(
-          "Inloggning misslyckades. Kontrollera dina uppgifter och försök igen."
-        );
+     
+      
+
+      if (!loginResult.isActive) {
+        setRootError("Kontot inaktiverat av admin")
+        navigate("/deactivated" , {replace: true})
+        
         return;
       }
 
-      // Viktigt: AuthService sparar token → nu uppdaterar vi global auth-state
+      
       await refreshUser();
 
       navigate("/", { replace: true });

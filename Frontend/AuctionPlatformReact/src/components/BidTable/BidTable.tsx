@@ -4,13 +4,14 @@ import BidRow from "../BidRow/BidRow";
 
 interface Props {
   bids: BidType[];
+   onDelete: (bidId: number, auctionId: number) => Promise<void>;
 }
 
-function BidTable({ bids }: Props) {
+function BidTable({ bids,onDelete }: Props) {
   
 
   const list = bids.map((b) => (
-    <BidRow key={b.bidId} bid={b} />
+    <BidRow key={b.bidId} bid={b} onDelete={onDelete}  />
   ));
 
   return (
@@ -20,6 +21,7 @@ function BidTable({ bids }: Props) {
         <th>Budgivare</th>
         <th className={style.right}>Bud</th>
         <th>Datum</th>
+        <th></th>
       </tr>
     </thead>
 
@@ -36,7 +38,6 @@ function BidTable({ bids }: Props) {
     </tbody>
   </table>
 );
-
 }
 
 export default BidTable;

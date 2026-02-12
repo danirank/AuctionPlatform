@@ -14,20 +14,18 @@ namespace AuctionPlatform.Api.Data.DTO
 
     public class AdminDeactivateAuctionDto
     {
-        public bool IsDeactivatedByAdmin { get; set; } = false;
+        public bool IsDeactivatedByAdmin { get; set; }
     }
 
     public class UpdateAuctionResponseDto
     {
         public string? Title { get; set; }
+        public string? UserName { get; set; }
         public string? Description { get; set; }
         public bool IsOpen { get; set; }
         public decimal StartPrice { get; set; }
         public string? ImageUrl { get; set; }
-
-        public bool IsDeactivatedByAdmin { get; set; } = false;
-
-
+        public bool IsDeactivatedByAdmin { get; set; }
 
 
     }

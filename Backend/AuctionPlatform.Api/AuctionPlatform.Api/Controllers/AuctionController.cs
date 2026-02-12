@@ -103,7 +103,7 @@ namespace AuctionPlatform.Api.Controllers
 
         }
 
-        [Route("/dectivate")]
+        [Route("/deactivate")]
         [HttpPut]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeActivateAuction(AdminDeactivateAuctionDto dto, int auctionId)

@@ -59,9 +59,14 @@ namespace AuctionPlatform.Api.Core.Services
             if (auction is null)
                 return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.EntityWithIdNotFound);
 
-            auction.IsDeactivatedByAdmin = dto.IsDeactivatedByAdmin;
 
+            if (auction.IsDeactivatedByAdmin == dto.IsDeactivatedByAdmin)
+                return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.UpdateFailed);
+
+
+            auction.IsDeactivatedByAdmin = dto.IsDeactivatedByAdmin;
             var result = await _repo.SaveChangesAsync();
+
 
             if (!result)
                 return Result<UpdateAuctionResponseDto>.Fail(ErrorMessages.FailSaveAsync);
@@ -69,6 +74,8 @@ namespace AuctionPlatform.Api.Core.Services
             var respDto = new UpdateAuctionResponseDto
             {
                 Title = auction.Title,
+                IsOpen = auction.IsOpen,
+                UserName = auction.User?.UserName,
                 Description = auction.Description,
                 ImageUrl = auction.ImageUrl,
                 StartPrice = auction.StartPrice,

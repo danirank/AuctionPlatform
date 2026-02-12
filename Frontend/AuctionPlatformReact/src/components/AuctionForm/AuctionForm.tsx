@@ -96,6 +96,8 @@ function AuctionForm({
             value={values.startAtUtc}
             onChange={(e) => onChange("startAtUtc", e.target.value)}
             required
+            disabled = {values.hasBid}
+
           />
         </div>
 
@@ -117,5 +119,6 @@ function AuctionForm({
     </div>
   );
 }
+
 
 export default AuctionForm;

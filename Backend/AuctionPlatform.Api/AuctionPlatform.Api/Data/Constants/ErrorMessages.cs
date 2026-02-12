@@ -18,5 +18,7 @@
         public const string BidLowerThanStrtSprice = "Bid was lower than startprice";
         public const string BidIsNotLatest = "Cannot delete if there is bid after";
         public const string AuctionIsClose = "Auction is closed";
+        public const string UpdateFailed = "No update";
+        public const string DeActivatedByAdmin = "Account deactivated";
     }
 }

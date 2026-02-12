@@ -1,4 +1,4 @@
-import type { RegisterUserType } from '../../types/Types';
+import type { RegisterUserType, SetUserStatusType, UserTableType } from '../../types/Types';
 import type { UserType } from '../../types/Types';
 import { authService } from '../AuthService/AuthService';
 
@@ -52,5 +52,40 @@ if (!user) {
 }
 
 
+export async function GetUsers() {
+  const url = `https://localhost:7063/allUsers`
+  const token = authService.getToken();
+
+  const users: UserTableType[] = await 
+    fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+
+    }).then(respone => respone.json()); 
+
+
+    return users; 
+
+}
+
+export async function SetUserStatus({userId, isActive}: SetUserStatusType) {
+  
+  const url = `https://localhost:7063/api/User?userId=${userId}`
+  const token = authService.getToken();
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type":"application/json",
+      Authorization: `Bearer ${token}`
+    }, 
+    body: JSON.stringify({isActive})
+      
+  });
+
+  console.log(response); 
+  return response.json(); 
+
+}
 
 

@@ -79,13 +79,14 @@ export async function LoginUser(usernameOrEmail: string, password: string) {
         body: JSON.stringify({usernameOrEmail, password})
     });
     const result = await response.json();
-    if(response.ok) {
+    
+
+    if(response.ok && result.isActive == true) {
+
         await authService.setToken(result.token);
-        return true;
-    } else {
-        return false;
-    }
-   
+         
+    } 
+   return result;
 }
 
 

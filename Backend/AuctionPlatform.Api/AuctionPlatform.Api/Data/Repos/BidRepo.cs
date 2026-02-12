@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuctionPlatform.Api.Data.Repos
 {
+
     public class BidRepo : IBidRepo
     {
 
@@ -58,6 +59,12 @@ namespace AuctionPlatform.Api.Data.Repos
         public async Task<Bid?> FindByIdAsync(int bidId)
         {
             return await _context.Bids.FirstOrDefaultAsync(b => b.Id == bidId);
+        }
+
+        public async Task<List<Bid>> GetBidByUserId(string userId)
+        {
+            return await _context.Bids.Include(u => u.User)
+                .Where(b => b.UserId == userId).ToListAsync();
         }
     }
 }

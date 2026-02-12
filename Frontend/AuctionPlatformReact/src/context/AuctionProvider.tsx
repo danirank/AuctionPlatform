@@ -1,6 +1,7 @@
 // src/context/AuctionProvider.tsx (uppdatera provider för create + update med rätt DTO-typer)
-import { createContext, useContext, useEffect, useState } from "react";
-import type { AuctionType, CreateAuctionType, UpdateAuctionType } from "../types/Types";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import type { AuctionType, CreateAuctionType, UpdateAuctionType, } from "../types/Types";
+
 
 import {
   GetAllAuctions,
@@ -35,23 +36,25 @@ export function AuctionProvider({ children }: { children: React.ReactNode }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [includeClosed, setIncludeClosed] = useState(false);
 
-  const load = async () => {
-    try {
-      const term = searchTerm.trim();
 
-      const result = includeClosed
-        ? term === ""
-          ? await GetAllAuctions()
-          : await GetAllAuctionsSearch(term)
-        : term === ""
-        ? await GetAllOpenAuctions()
-        : await GetOpenAuctionsSearch(term);
+  const load = useCallback(async () => {
+  try {
+    const term = searchTerm.trim();
 
-      setAuctions(result);
-    } catch (err) {
-      console.error("Failed to load auctions:", err);
-    }
-  };
+    const result = includeClosed
+      ? term === ""
+        ? await GetAllAuctions()
+        : await GetAllAuctionsSearch(term)
+      : term === ""
+      ? await GetAllOpenAuctions()
+      : await GetOpenAuctionsSearch(term);
+
+    setAuctions(result);
+  } catch (err) {
+    console.error("Failed to load auctions:", err);
+  }
+}, [includeClosed, searchTerm]);
+
 
   
 
@@ -66,6 +69,7 @@ export function AuctionProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
   };
+  
 
   const updateAuction = async (id: number, values: UpdateAuctionType) => {
     try {
