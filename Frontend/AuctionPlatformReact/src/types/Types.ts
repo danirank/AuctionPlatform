@@ -30,12 +30,12 @@ export interface CreateAuctionType {
 }
 
 export interface BidType {
-    bidId:number,
+    auctionId: number
     userId:string,
     bidAmount: number,
+    bidId:number,
     bidDateTime: string,
     userName: string,
-    auctionId: number
 }
 
 export interface RegisterUserType {

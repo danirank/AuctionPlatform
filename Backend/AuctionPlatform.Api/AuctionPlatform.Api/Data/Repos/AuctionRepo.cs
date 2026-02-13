@@ -25,7 +25,7 @@ namespace AuctionPlatform.Api.Data.Repos
 
         public async Task<List<Auction>> GetAllAsync(string titleSearch)
         {
-            IQueryable<Auction> query = _context.Auctions.Include(u => u.User);
+            IQueryable<Auction> query = _context.Auctions.Include(u => u.User).Include(b => b.Bids);
 
             if (!string.IsNullOrWhiteSpace(titleSearch))
             {
@@ -38,7 +38,7 @@ namespace AuctionPlatform.Api.Data.Repos
         public async Task<List<Auction>> GetAllAsync()
         {
 
-            return await _context.Auctions.Include(u => u.User).ToListAsync();
+            return await _context.Auctions.Include(u => u.User).Include(b => b.Bids).ToListAsync();
         }
 
 
@@ -46,7 +46,10 @@ namespace AuctionPlatform.Api.Data.Repos
 
         public async Task<List<Auction>> GetAllByUserAsync(string userId)
         {
-            return await _context.Auctions.Where(a => a.UserId == userId).ToListAsync();
+            return await _context.Auctions
+                .Where(a => a.UserId == userId)
+                .Include(b => b.Bids)
+                .ToListAsync();
         }
 
         //Update helpers 
@@ -55,6 +58,7 @@ namespace AuctionPlatform.Api.Data.Repos
 
             return await _context.Auctions
                 .Include(u => u.User)
+                .Include(b => b.Bids)
                 .FirstOrDefaultAsync(a => a.AuctionId == auctionId);
         }
         public async Task<bool> SaveChangesAsync()
@@ -67,6 +71,7 @@ namespace AuctionPlatform.Api.Data.Repos
             var now = DateTime.UtcNow;
             return await _context.Auctions
                 .Include(u => u.User)
+                .Include(b => b.Bids)
                 .Where(a => now < a.EndAtUtc).ToListAsync();
         }
 
@@ -76,6 +81,7 @@ namespace AuctionPlatform.Api.Data.Repos
             var now = DateTime.UtcNow;
             IQueryable<Auction> query = _context.Auctions
                 .Include(u => u.User)
+                .Include(b => b.Bids)
                 .Where(a => now < a.EndAtUtc);
 
 

@@ -15,7 +15,8 @@ function AuctionList({auctions}: Props) {
     
 
     const list = auctions.map((auction) => {
-        return auction.isOpen && !auction.isDeactivatedByAdmin 
+
+        return auction.isOpen 
         ? <AuctionCard key={auction.id} auction={auction} /> 
         : <ClosedAuctionCard key={auction.id} auction={auction}/>;
     });

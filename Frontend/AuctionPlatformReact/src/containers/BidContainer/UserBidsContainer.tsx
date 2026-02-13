@@ -1,36 +1,46 @@
+import { useEffect, useState } from "react";
 import BidTable from "../../components/BidTable/BidTable";
-import { useState, useEffect } from "react";
 import { GetBidsByUserId, DeleteBid } from "../../services/BidService/BidService";
 import type { BidType } from "../../types/Types";
 import { useAuth } from "../../context/AuthProvider";
+import { useAuctions } from "../../context/AuctionProvider";
 
-function BidContainer() {
+function UserBidContainer() {
   const { user } = useAuth();
   const [bids, setBids] = useState<BidType[]>([]);
+  const { allAuctions, loadAllAuctions } = useAuctions();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const userId = user?.userId;
-    if (!userId) return;
+    if (!user?.userId) return;
 
     const loadBids = async () => {
+      setLoading(true);
+
       const data = await GetBidsByUserId();
+      console.log(data);
       setBids(data ?? []);
+      setLoading(false);
     };
 
     loadBids();
   }, [user]);
 
-  const handleDelete = async (bidId: number, auctionId: number) => {
-   const deleted =  await DeleteBid({ bidId, auctionId });
-    if(!deleted)
-    return;
+  useEffect(() => {
+    loadAllAuctions();
+  }, [loadAllAuctions]);
 
-    // rerender direkt:
+  const handleDelete = async (bidId: number, auctionId: number) => {
+    const deleted = await DeleteBid({ bidId, auctionId });
+
+    if (!deleted) return;
+
     setBids(prev => prev.filter(b => b.bidId !== bidId));
-    // (alternativt: await reload från API om du vill)
   };
 
-  return <BidTable bids={bids} onDelete={handleDelete} />;
+  if (loading) return <p>Laddar bud...</p>;
+
+  return <BidTable auctions={allAuctions} bids={bids} onDelete={handleDelete} />;
 }
 
-export default BidContainer;
+export default UserBidContainer;

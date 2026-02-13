@@ -120,6 +120,8 @@ namespace AuctionPlatform.Api.Core.Services
                 {
                     a.HighestBid = new BidsGetDto
                     {
+                        BidId = highestBid.Id,
+                        AuctionId = highestBid.AuctionId,
                         BidAmount = highestBid.BidAmount,
                         UserName = highestBid.User?.UserName,
                         BidDateTime = highestBid.BidTimeUtc
@@ -159,6 +161,9 @@ namespace AuctionPlatform.Api.Core.Services
                 {
                     a.HighestBid = new BidsGetDto
                     {
+                        BidId = highestBid.Id,
+                        UserId = highestBid.User?.Id,
+                        AuctionId = highestBid.AuctionId,
                         BidAmount = highestBid.BidAmount,
                         UserName = highestBid.User?.UserName,
                         BidDateTime = highestBid.BidTimeUtc
@@ -199,6 +204,7 @@ namespace AuctionPlatform.Api.Core.Services
                 {
                     a.HighestBid = new BidsGetDto
                     {
+                        AuctionId = highestBid.AuctionId,
                         BidAmount = highestBid.BidAmount,
                         UserName = highestBid.User?.UserName,
                         BidDateTime = highestBid.BidTimeUtc
@@ -238,6 +244,7 @@ namespace AuctionPlatform.Api.Core.Services
                 {
                     a.HighestBid = new BidsGetDto
                     {
+                        AuctionId = highestBid.AuctionId,
                         BidAmount = highestBid.BidAmount,
                         UserName = highestBid.User?.UserName,
                         BidDateTime = highestBid.BidTimeUtc

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import AuctionList from "../../components/AuctionList/AuctionList";
 import { useAuctions } from "../../context/AuctionProvider";
 import { useAuth } from "../../context/AuthProvider";
@@ -5,9 +6,13 @@ import { useAuth } from "../../context/AuthProvider";
 
 function MyPageAuctions () {
 const {user} = useAuth();
-const {auctions} = useAuctions();
-console.log(user,)
-     const myAuctions = auctions.filter(a => {
+const { allAuctions, loadAllAuctions } = useAuctions();
+
+useEffect(() => {
+  loadAllAuctions();
+}, []);
+
+     const myAuctions = allAuctions.filter(a => {
        return a.userId === user?.userId
      })   
     return (<>

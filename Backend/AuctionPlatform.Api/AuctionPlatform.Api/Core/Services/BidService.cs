@@ -121,6 +121,7 @@ namespace AuctionPlatform.Api.Core.Services
             var resultList = bids.Select(b => new BidsGetDto
             {
                 BidId = b.Id,
+                AuctionId = b.AuctionId,
                 UserId = b.UserId,
                 BidAmount = b.BidAmount,
                 BidDateTime = b.BidTimeUtc,
@@ -158,7 +159,9 @@ namespace AuctionPlatform.Api.Core.Services
 
             var dto = new BidsGetDto
             {
-
+                BidId = highestBid.Id,
+                AuctionId = highestBid.AuctionId,
+                UserId = highestBid.UserId,
                 BidAmount = highestBid.BidAmount,
                 BidDateTime = highestBid.BidTimeUtc,
                 UserName = highestBid.User?.UserName

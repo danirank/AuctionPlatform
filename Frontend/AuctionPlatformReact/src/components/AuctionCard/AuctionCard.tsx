@@ -19,6 +19,7 @@ function AuctionCard({ auction}: Props) {
   const goToAuction = () => navigate(`/auction/${auction.id}`);
   const toggleVisible = () => setIsVisible(v => !v);
   
+  
 
   const highestBid = auction.highestBid
     ? auction.highestBid
@@ -26,7 +27,7 @@ function AuctionCard({ auction}: Props) {
 
   const hasAnyBids =
     highestBid.bidAmount > 0
-      ? <p>Slutpris: {highestBid.bidAmount} kr av {highestBid.userName}</p>
+      ? <p>Högsta: {highestBid.bidAmount} kr av {highestBid.userName}</p>
       : <p>Inga bud än</p>;
 
   const canBid =
@@ -43,23 +44,32 @@ function AuctionCard({ auction}: Props) {
 
       <div onClick={(e) => e.stopPropagation()}>
 
-        {canBid && !isVisible && (
-  <PrimaryButton
-    buttonEvent={toggleVisible}
-    buttonText="Lägg bud"
-  />
-)}
+  {/* Admin-inaktiverad */}
+  {auction.isDeactivatedByAdmin && (
+    <p className={style.deactivated}>
+      <strong>Auktionen har inaktiverats av administratör</strong>
+    </p>
+  )}
 
+  {/* Lägg bud-knapp */}
+  {canBid && !isVisible && !auction.isDeactivatedByAdmin && (
+    <PrimaryButton
+      buttonEvent={toggleVisible}
+      buttonText="Lägg bud"
+    />
+  )}
 
-        {isVisible && (
-  <AddBid
-    auctionId={auction.id}
-    onCancel={toggleVisible}
-    onSuccess={() => setIsVisible(false)}
-  />
-)}
+  {/* AddBid-form */}
+  {isVisible && (
+    <AddBid
+      auctionId={auction.id}
+      onCancel={toggleVisible}
+      onSuccess={() => setIsVisible(false)}
+    />
+  )}
 
-      </div>
+</div>
+
     </div>
   );
 }

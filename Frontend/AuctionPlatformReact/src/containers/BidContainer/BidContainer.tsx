@@ -1,45 +1,45 @@
 import BidTable from "../../components/BidTable/BidTable";
 import { useState, useEffect } from "react";
 import { DeleteBid, GetBidsByAuctionId } from "../../services/BidService/BidService";
-import type { BidType } from '../../types/Types'
+import type { BidType } from "../../types/Types";
+import { useAuctions } from "../../context/AuctionProvider";
 
 interface BidContainerProps {
-    auctionId: number;
+  auctionId: number;
 }
 
 function BidContainer({ auctionId }: BidContainerProps) {
+  const [bids, setBids] = useState<BidType[]>([]);
+  const { allAuctions, loadAllAuctions } = useAuctions();
 
-const [bids, setBids] = useState<BidType[]>([]);
+  // ✅ Ladda alla auktioner (så highestBid finns även för stängda)
+  useEffect(() => {
+    loadAllAuctions();
+  }, [loadAllAuctions]);
 
-useEffect(() => {
-
+  // ✅ Ladda bids för aktuell auktion
+  useEffect(() => {
     const loadBids = async () => {
-        try {
-            const bid = await GetBidsByAuctionId(auctionId);
-            setBids(bid);
-        } catch (err) {
-            console.error("Failed to load bids:", err);
-        }
+      try {
+        const data = await GetBidsByAuctionId(auctionId);
+        setBids(data ?? []);
+      } catch (err) {
+        console.error("Failed to load bids:", err);
+        setBids([]);
+      }
+    };
 
-    }
+    loadBids();
+  }, [auctionId]);
 
-loadBids();
+  const handleDelete = async (bidId: number, auctionId: number) => {
+    const deleted = await DeleteBid({ bidId, auctionId });
+    if (!deleted) return;
 
-},[auctionId]);
-
-const handleDelete = async (bidId: number, auctionId: number) => {
-   const deleted = await DeleteBid({ bidId, auctionId });
-
-   if(!deleted)
-    return;
-    // rerender direkt:
     setBids(prev => prev.filter(b => b.bidId !== bidId));
-    // (alternativt: await reload från API om du vill)
   };
 
-
-    return <BidTable  bids= {bids} onDelete={handleDelete} />
+  return <BidTable bids={bids} auctions={allAuctions} onDelete={handleDelete} />;
 }
-
 
 export default BidContainer;
