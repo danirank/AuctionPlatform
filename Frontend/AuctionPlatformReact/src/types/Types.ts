@@ -52,6 +52,11 @@ export interface LoginUserType {
     password: string
 }
 
+export interface UpdatePasswordType { 
+    oldPassword:string, 
+    newPassword: string
+}
+
 export interface AuthContextType {
     user: UserType | null;
     isLoggedIn: boolean | null;
@@ -102,6 +107,13 @@ export interface UserTableType {
 export interface SetUserStatusType {
     userId: string, 
     isActive: boolean
+}
+
+export interface LoginResponseType {
+    isActive: boolean | null, 
+    token: string | null,
+    error: string | null
+    
 }
 
 export interface SetAuctionStatusType {

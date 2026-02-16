@@ -13,7 +13,7 @@ function isTokenValid(token: string | null): boolean {
 
   try {
     const decoded = jwtDecode<JwtPayload>(token);
-    if (!decoded.exp) return true; // om exp saknas: behandla som giltig (eller välj false om du vill)
+    if (!decoded.exp) return true; 
     return decoded.exp * 1000 > Date.now();
   } catch {
     return false;
@@ -84,6 +84,7 @@ export async function LoginUser(usernameOrEmail: string, password: string) {
     if(response.ok && result.isActive == true) {
 
         await authService.setToken(result.token);
+        
          
     } 
    return result;

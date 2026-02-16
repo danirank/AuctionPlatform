@@ -219,6 +219,35 @@ namespace AuctionPlatform.Api.Core.Services
 
             return Result<GetUserValidationDto>.Ok(resDto);
         }
+
+        public async Task<Result<LoginResponseDto>> UpdateUserPassword(UpdateUserPasswordDto dto, string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+                return Result<LoginResponseDto>.Fail(ErrorMessages.UserNotFound);
+
+            if (dto.OldPassword is null || dto.NewPassword is null)
+                return Result<LoginResponseDto>.Fail(ErrorMessages.WrongPassword);
+
+            var result = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
+
+            if (!result.Succeeded)
+                return Result<LoginResponseDto>.Fail(ErrorMessages.UpdateFailed);
+
+            var token = await GenerateToken(user);
+
+
+
+            var responseDto = new LoginResponseDto
+            {
+                IsActive = user.IsActiveUser,
+                Token = token
+
+            };
+
+            return Result<LoginResponseDto>.Ok(responseDto);
+        }
     }
 
 }

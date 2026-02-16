@@ -1,7 +1,8 @@
 import type { AuctionType, BidType } from "../../types/Types";
 import { FormatDate, getTimeLeft } from "../../helpers/timeHelpers";
-
 import { useNavigate } from "react-router";
+import style from "../BidTable/BidTable.module.css";
+import { useAuth } from "../../context/AuthProvider";
 
 interface Props {
   bid: BidType;
@@ -10,33 +11,65 @@ interface Props {
 }
 
 function BidRow({ bid, auction, onDelete }: Props) {
-    const navigate = useNavigate();
-     const canDelete = bid.bidId == auction?.highestBid?.bidId
-        && bid.userId == auction.highestBid.userId && auction.isOpen;
-  
-        if (!auction) return null; // eller returnera något "Laddar..."
-            const timeLeft = getTimeLeft(auction.endDateUtc);
-    
-        const text = auction.isOpen ? timeLeft : "Avslutad"
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
+  const hasAuction = !!auction;
 
-         const goToAuction = () => navigate(`/auction/${auction.id}`);
-        
+  const canDelete =
+    !!auction &&
+    bid.bidId === auction.highestBid?.bidId &&
+    bid.userId === auction.highestBid?.userId &&
+    bid.userId === user?.userId &&
+    auction.isOpen;
+
+  const timeText = !auction
+    ? "—"
+    : auction.isOpen
+    ? getTimeLeft(auction.endDateUtc)
+    : "Avslutad";
+
+  const goToAuction = () => {
+    if (!auction) return;
+    navigate(`/auction/${auction.id}`);
+  };
 
   return (
-    <tr>
-      <td>{bid.userName}</td>
-      <td>{bid.bidAmount} kr</td>
-      <td>{FormatDate(bid.bidDateTime)}</td>
-      <td>
-        {canDelete? (
-          <button onClick={() => onDelete(bid.bidId, bid.auctionId)}>
-            Ångra ditt bud
+    <tr className={style.row}>
+      <td data-label="Användare">{bid.userName}</td>
+
+      <td data-label="Bud">{bid.bidAmount} kr</td>
+
+      <td data-label="Datum">{FormatDate(bid.bidDateTime)}</td>
+
+      <td data-label="Åtgärd" className={style.actionsCell}>
+        {canDelete ? (
+          <button
+            className={style.dangerBtn}
+            onClick={() => onDelete(bid.bidId, bid.auctionId)}
+          >
+            Ångra bud
           </button>
-        ): ""}
+        ) : (
+          <span className={style.muted}>—</span>
+        )}
       </td>
-      <td onClick = {goToAuction}>{auction?.title}</td>
-      <td>{text}</td>
+
+      <td data-label="Auktion">
+        {hasAuction ? (
+          <button className={style.linkBtn} onClick={goToAuction} type="button">
+            {auction.title}
+          </button>
+        ) : (
+          <span className={style.muted}>Laddar auktion…</span>
+        )}
+      </td>
+
+      <td data-label="Tid kvar">
+        <span className={auction?.isOpen ? style.timeOpen : style.timeClosed}>
+          {timeText}
+        </span>
+      </td>
     </tr>
   );
 }

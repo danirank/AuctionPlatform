@@ -1,83 +1,82 @@
 import { NavLink } from "react-router";
-import { useState } from "react";
-import styles from "./MyPageNav.module.css";
 import { useAuth } from "../../context/AuthProvider";
+
+import Container from "react-bootstrap/Container";
+import Navbar from "react-bootstrap/Navbar";
+import Nav from "react-bootstrap/Nav";
+import NavDropdown from "react-bootstrap/NavDropdown";
 
 function MyPageNav() {
   const { user } = useAuth();
-  const [open, setOpen] = useState(false);
 
   const isAdmin = user?.roles?.includes("Admin") ?? false;
 
   return (
-    <nav className={styles.nav}>
-      <ul className={styles.list}>
-        <li>
-          <NavLink
-            to="/mypage/auctions"
-            className={({ isActive }) => (isActive ? styles.active : styles.link)}
-          >
-            Mina auktioner
-          </NavLink>
-        </li>
+    <Navbar
+      expand="md"
+      bg="dark"
+      variant="dark"
+      className="mb-4 rounded shadow-sm"
+    >
+      <Container fluid>
+        {/* Brand */}
+        <Navbar.Brand>Mina sidor</Navbar.Brand>
 
-        <li>
-          <NavLink
-            to="/mypage/bids"
-            className={({ isActive }) => (isActive ? styles.active : styles.link)}
-          >
-            Mina bud
-          </NavLink>
-        </li>
+        {/* Hamburger */}
+        <Navbar.Toggle aria-controls="mypage-nav" />
 
-        <li>
-          <NavLink
-            to="/mypage/create"
-            className={({ isActive }) => (isActive ? styles.active : styles.link)}
-          >
-            Skapa auktion
-          </NavLink>
-        </li>
+        {/* Collapse */}
+        <Navbar.Collapse id="mypage-nav">
+          <Nav className="me-auto">
 
-        
-        <li className={styles.dropdown}>
-          <button
-            type="button"
-            className={styles.dropdownBtn}
-            onClick={() => setOpen((o) => !o)}
-          >
-            Inställningar ▾
-          </button>
+            <Nav.Link as={NavLink} to="/mypage/auctions">
+              Mina auktioner
+            </Nav.Link>
 
-          {open && (
-            <ul className={styles.submenu}>
-              <li>
-                <NavLink
-                  to="/mypage/update-profile"
-                  className={({ isActive }) => (isActive ? styles.active : styles.link)}
-                  onClick={() => setOpen(false)}
+            <Nav.Link as={NavLink} to="/mypage/bids">
+              Mina bud
+            </Nav.Link>
+
+            <Nav.Link as={NavLink} to="/mypage/create">
+              Skapa auktion
+            </Nav.Link>
+
+            {/* Inställningar */}
+            <NavDropdown title="Inställningar" id="settings-dropdown">
+              <NavDropdown.Item
+                as={NavLink}
+                to="/mypage/update-password"
+              >
+                Uppdatera lösenord
+              </NavDropdown.Item>
+            </NavDropdown>
+
+            {/* Admin Dropdown */}
+            {isAdmin && (
+              <NavDropdown
+                title="Admin"
+                id="admin-dropdown"
+              >
+                <NavDropdown.Item
+                  as={NavLink}
+                  to="/mypage/admin/users"
                 >
-                  Uppdatera profil
-                </NavLink>
-              </li>
+                  Användare
+                </NavDropdown.Item>
 
-              
-            </ul>
-          )}
-        </li>
-        {isAdmin && (
-                <li>
-                  <NavLink
-                    to="/mypage/admin"
-                    className={({ isActive }) => (isActive ? styles.active : styles.link)}
-                    onClick={() => setOpen(false)}
-                  >
-                    Admin Panel
-                  </NavLink>
-                </li>
-              )}
-      </ul>
-    </nav>
+                <NavDropdown.Item
+                  as={NavLink}
+                  to="/mypage/admin/auctions"
+                >
+                  Auktioner
+                </NavDropdown.Item>
+              </NavDropdown>
+            )}
+
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 }
 

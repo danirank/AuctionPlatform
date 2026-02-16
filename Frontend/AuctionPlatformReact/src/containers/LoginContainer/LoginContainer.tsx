@@ -36,20 +36,30 @@ function LoginContainer() {
         values.password
       );
 
-     
+      
+      
+
+     if (loginResult.isSucces == false){
+      setRootError(loginResult.error)
+    
+      return;
+
+     }
+      
       
 
       if (!loginResult.isActive) {
-        setRootError("Kontot inaktiverat av admin")
+        setRootError(loginResult.error)
+        console.log(loginResult.ok)
         navigate("/deactivated" , {replace: true})
         
         return;
       }
-
       
       await refreshUser();
 
-      navigate("/", { replace: true });
+      navigate("/mypage", { replace: true });
+
     } catch (err) {
       setRootError("Något gick fel. Försök igen.");
       console.error("Login error:", err);

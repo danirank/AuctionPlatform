@@ -10,7 +10,7 @@ function AuctionContainer() {
   return (
     <>
       
-    <Searchbar />
+     <Searchbar />
       <AuctionList auctions={auctions} />
     </>
   );

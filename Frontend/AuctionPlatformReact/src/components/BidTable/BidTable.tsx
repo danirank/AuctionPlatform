@@ -9,15 +9,8 @@ interface Props {
 }
 
 function BidTable({ bids, auctions, onDelete }: Props) {
-  console.log("sample", auctions[0]);
-
-  console.log("first bid raw", bids[0]);
-console.log("bid keys", bids[0] && Object.keys(bids[0] as any));
-
-
-  const tableData = bids.map(b => {
-    const auction = auctions.find(a => Number(a.id) === Number(b.auctionId));
-    console.log("match?", b.auctionId, auction?.id);
+  const tableData = bids.map((b) => {
+    const auction = auctions.find((a) => Number(a.id) === Number(b.auctionId));
 
     return (
       <BidRow
@@ -29,32 +22,30 @@ console.log("bid keys", bids[0] && Object.keys(bids[0] as any));
     );
   });
 
-  return (
-    <table className={style.table}>
-      <thead>
-        <tr>
-          <th>Användare</th>
-          <th>Bud</th>
-          <th>Datum</th>
-          <th></th>
-          <th>Auction</th>
-          <th>Tid kvar</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {bids.length === 0 ? (
+ return (
+  <div className={style.wrapper}>
+    {bids.length === 0 ? (
+      <div className={style.emptyCard}>
+        Inga bud hittades
+      </div>
+    ) : (
+      <table className={style.table}>
+        <thead className={style.thead}>
           <tr>
-            <td colSpan={4} className={style.empty}>
-              Inga bud hittades
-            </td>
+            <th>Användare</th>
+            <th>Bud</th>
+            <th>Datum</th>
+            <th className={style.actions}>Åtgärd</th>
+            <th>Auktion</th>
+            <th>Tid kvar</th>
           </tr>
-        ) : (
-          tableData
-        )}
-      </tbody>
-    </table>
-  );
+        </thead>
+        <tbody>{tableData}</tbody>
+      </table>
+    )}
+  </div>
+);
+
 }
 
 export default BidTable;

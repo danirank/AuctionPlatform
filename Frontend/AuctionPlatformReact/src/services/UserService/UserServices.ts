@@ -1,4 +1,4 @@
-import type { RegisterUserType, SetUserStatusType, UserTableType } from '../../types/Types';
+import type { LoginResponseType, RegisterUserType, SetUserStatusType, UpdatePasswordType, UserTableType } from '../../types/Types';
 import type { UserType } from '../../types/Types';
 import { authService } from '../AuthService/AuthService';
 
@@ -87,5 +87,44 @@ export async function SetUserStatus({userId, isActive}: SetUserStatusType) {
   return response.json(); 
 
 }
+
+export async function UpdatePassword({
+  oldPassword,
+  newPassword,
+}: UpdatePasswordType) {
+  const token = authService.getToken();
+
+  if (!token) {
+    throw new Error("Ingen token hittades. Logga in igen.");
+  }
+
+  const url = "https://localhost:7063/user/update";
+
+  const response = await fetch(url, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ oldPassword, newPassword }),
+  });
+
+  
+  const result :LoginResponseType = await response.json();
+
+  if (!response.ok) {
+    
+    throw new Error(result?.error || "Kunde inte uppdatera lösenord");
+  }
+
+  
+  if (result?.token && result?.isActive) {
+    authService.clearToken();
+    authService.setToken(result.token);
+  }
+
+  return result;
+}
+
 
 

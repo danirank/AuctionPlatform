@@ -18,17 +18,15 @@ const { isLoggedIn, logout } = useAuth();
   return (
     <header className={style.header}> 
       
-    <Navbar expand="md" bg="dark" variant="dark" className="px-3">
+    <Navbar expand="md" variant="black" className="px-3">
       <Container fluid>
         
         <Navbar.Brand as={RouterNavLink} to="/">
           <Logo />
         </Navbar.Brand>
-
-        {/* Hamburger */}
+        
         <Navbar.Toggle aria-controls="main-nav" />
 
-        {/* Endast navlinks inuti collapse */}
         <Navbar.Collapse id="main-nav">
           <Nav className="me-auto">
             <Nav.Link as={RouterNavLink} to="/" end>

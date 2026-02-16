@@ -84,7 +84,21 @@ namespace AuctionPlatform.Api.Controllers
             return result.IsSucces ? Ok(result.Data) : BadRequest(result.Error);
         }
 
+        [HttpPut]
+        [Authorize]
+        [Route("/user/update")]
 
+        public async Task<IActionResult> UpdatePassword(UpdateUserPasswordDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) as string;
+
+            if (userId is null)
+                return Unauthorized();
+
+            var result = await _userService.UpdateUserPassword(dto, userId);
+
+            return Ok(result.Data);
+        }
 
     }
 }

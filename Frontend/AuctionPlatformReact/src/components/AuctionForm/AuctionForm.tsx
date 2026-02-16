@@ -70,7 +70,7 @@ function AuctionForm({
             id="startPrice"
             type="number"
             min="0"
-            step="0.01"
+            step="1"
             value={values.startPrice}
             onChange={(e) => onChange("startPrice", e.target.value)}
             required

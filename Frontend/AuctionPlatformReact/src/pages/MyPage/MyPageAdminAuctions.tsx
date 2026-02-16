@@ -14,9 +14,3 @@ function MyPageAdminAuctions() {
 
 export default MyPageAdminAuctions;
 
-//kolla om användare är admin annars nagigera till forbidden 
-// 
-// Lista på alla användare 
-// 
-// Lista på alla auktioner med sökfunktion (Slimmad lista) 
-// // knapp för att aktiver / inaktivera varje användare och auktion

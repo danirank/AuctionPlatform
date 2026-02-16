@@ -22,7 +22,7 @@ namespace AuctionPlatform.Api.Core.Interfaces
 
         Task<Result<GetUserDto>> DeActivateUser(UpdateStatusUserDto dto, string userId);
 
-        Task<Result<GetUserDto>> UpdateUser(UpdateUserPasswordDto dto);
+        Task<Result<LoginResponseDto>> UpdateUserPassword(UpdateUserPasswordDto dto, string userId);
     }
 
 }
