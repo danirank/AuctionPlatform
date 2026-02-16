@@ -174,7 +174,7 @@ namespace AuctionPlatform.Api.Core.Services
             return Result<List<GetUsersDto>>.Ok(dto);
         }
 
-        public async Task<Result<GetUserDto>> DeActivateUser(UpdateUserDto dto, string userId)
+        public async Task<Result<GetUserDto>> DeActivateUser(UpdateStatusUserDto dto, string userId)
         {
             var user = await GetUserById(userId);
 

@@ -20,7 +20,9 @@ namespace AuctionPlatform.Api.Core.Interfaces
 
         Task<IEnumerable<string>> GetUserRoles(AppUser user);
 
-        Task<Result<GetUserDto>> DeActivateUser(UpdateUserDto dto, string userId);
+        Task<Result<GetUserDto>> DeActivateUser(UpdateStatusUserDto dto, string userId);
+
+        Task<Result<GetUserDto>> UpdateUser(UpdateUserPasswordDto dto);
     }
 
 }

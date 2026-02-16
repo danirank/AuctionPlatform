@@ -47,7 +47,6 @@ namespace AuctionPlatform.Api.Controllers
         }
 
         [Authorize]
-
         [HttpGet("/user/{userId}")]
 
         public async Task<IActionResult> GetUserValidation(string userId)
@@ -78,7 +77,7 @@ namespace AuctionPlatform.Api.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeActivateUser(UpdateUserDto dto, string userId)
+        public async Task<IActionResult> DeActivateUser(UpdateStatusUserDto dto, string userId)
         {
             var result = await _userService.DeActivateUser(dto, userId);
 
