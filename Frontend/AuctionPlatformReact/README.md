@@ -24,6 +24,7 @@ The application consumes a REST API built with ASP.NET Core and provides a respo
 - Vite
 - CSS Modules / Custom CSS
 - React Router
+- Context Api
 
 ---
 
@@ -34,3 +35,4 @@ The application consumes a REST API built with ASP.NET Core and provides a respo
 ```bash
 git clone <repository-url>
 cd frontend
+```
