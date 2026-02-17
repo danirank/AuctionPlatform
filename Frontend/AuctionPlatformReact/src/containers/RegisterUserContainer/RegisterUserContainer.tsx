@@ -3,6 +3,8 @@ import RegisterForm from "../../components/RegisterForm/RegisterForm";
 import type { RegisterUserType } from "../../types/Types";
 import {LoginUser } from "../../services/AuthService/AuthService";
 import { RegisterUser } from "../../services/UserService/UserServices";
+import { useNavigate } from "react-router";
+import { useAuth } from "../../context/AuthProvider";
 
 type FormValues = {
   firstName: string;
@@ -24,10 +26,12 @@ function RegisterUserContainer() {
     password: "",
     confirmPassword: "",
   });
-
+  const navigate = useNavigate(); 
   const [errors, setErrors] = useState<FieldErrors>({});
   const [rootError, setRootError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const {refreshUser} = useAuth();
+  
 
 
   const validateField = (name: keyof FormValues, value: string) => {
@@ -78,7 +82,6 @@ function RegisterUserContainer() {
     return Object.keys(nextErrors).length === 0;
   };
 
- 
 
   const handleChange = (name: keyof FormValues, value: string) => {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -140,6 +143,9 @@ function RegisterUserContainer() {
       }
 
       alert("Användare registrerad och inloggad!");
+      refreshUser();
+      navigate("/mypage", {replace: true} )
+
     } catch {
       setRootError("Något gick fel. Försök igen.");
     } finally {

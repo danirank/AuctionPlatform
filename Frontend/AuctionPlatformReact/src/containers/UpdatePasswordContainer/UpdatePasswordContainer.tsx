@@ -3,6 +3,7 @@ import UpdatePassword from "../../components/UpdatePassword/UpdatePassword";
 import type { UpdatePasswordType } from "../../types/Types";
 import { UpdatePassword as UpdatePasswordService } from '../../services/UserService/UserServices'
 import { useAuth } from "../../context/AuthProvider";
+import { useNavigate } from "react-router";
 
 
 
@@ -14,6 +15,7 @@ const {refreshUser} = useAuth();
     oldPassword: "",
     newPassword: "",
   });
+  const navigate = useNavigate();
 
   const [errors, setErrors] = useState<FieldErrors>({});
   const [rootError, setRootError] = useState("");
@@ -60,6 +62,8 @@ const {refreshUser} = useAuth();
 
     
     alert("Lösenord uppdaterat!");
+
+    navigate("/mypage", {replace:true})
 
   } catch (err: any) {
     setRootError(err.message || "Något gick fel");

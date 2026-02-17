@@ -10,7 +10,7 @@ namespace AuctionPlatform.Api.Data.SeedData
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
 
-            await CreateUserWithRole(userManager, "Daniel", "Andersson", "Danne", "admin@auction.com", "admin1", Roles.Admin);
+            await CreateUserWithRole(userManager, "Daniel", "Andersson", "admin", "admin@auction.com", "admin1", Roles.Admin);
             await CreateUserWithRole(userManager, "Pontus", "Karlsson", "Ponta", "pontus@auction.com", "auctionUser", Roles.User);
             await CreateUserWithRole(userManager, "Peter", "Svensson", "PMan", "peterB@auction.com", "auctionUser", Roles.User);
             await CreateUserWithRole(userManager, "Maria", "Nilsson", "Marre", "maria@auction.com", "auctionUser", Roles.User);

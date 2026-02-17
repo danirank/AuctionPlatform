@@ -12,7 +12,7 @@ export default function MyPageQuickStatsContainer() {
   const { user } = useAuth();
 
   const [myBids, setMyBids] = useState<BidType[]>([]);
-  const [loading, setLoading] = useState(true);
+  
 
   const userId = user?.userId;
 
@@ -26,9 +26,10 @@ export default function MyPageQuickStatsContainer() {
     if (!userId) return;
 
     const load = async () => {
-      setLoading(true);
+      
 
       try {
+
         
         if (allAuctions.length === 0) {
           await loadAllAuctions();
@@ -39,7 +40,7 @@ export default function MyPageQuickStatsContainer() {
       } catch (e) {
         setMyBids([]);
       } finally {
-        setLoading(false);
+        
       }
     };
 

@@ -11,7 +11,7 @@ interface BidContainerProps {
 
 function BidContainer({ auctionId,refreshKey }: BidContainerProps) {
   const [bids, setBids] = useState<BidType[]>([]);
-  const { allAuctions, loadAllAuctions } = useAuctions();
+  const { allAuctions, loadAllAuctions, reload } = useAuctions();
 
   
   useEffect(() => {
@@ -36,8 +36,11 @@ function BidContainer({ auctionId,refreshKey }: BidContainerProps) {
   const handleDelete = async (bidId: number, auctionId: number) => {
     const deleted = await DeleteBid({ bidId, auctionId });
     if (!deleted) return;
-
+    
     setBids(prev => prev.filter(b => b.bidId !== bidId));
+
+   await reload();
+   await loadAllAuctions();
   };
 
   return <BidTable bids={bids} auctions={allAuctions} onDelete={handleDelete} />;
