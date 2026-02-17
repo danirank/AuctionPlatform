@@ -10,6 +10,8 @@ import MyPageAdminAuctions from "./MyPageAdminAuctions";
 import UserBidsContainer from "../../containers/BidContainer/UserBidsContainer";
 import UpdatePasswordContainer from "../../containers/UpdatePasswordContainer/UpdatePasswordContainer";
 
+import MyPageQuickStatsContainer from "../../containers/MyPageHomeContainer/MyPageHomeContainer";
+
 
 
 function MyPage() {
@@ -19,6 +21,7 @@ function MyPage() {
        <>
 
           <MyPageNav />
+          <MyPageQuickStatsContainer />
           <Routes>
             <Route path='auctions' element={<MyPageAuctions/>}/> 
             <Route path='bids' element={<UserBidsContainer/>} />

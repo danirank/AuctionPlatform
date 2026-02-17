@@ -18,7 +18,7 @@ function UserBidContainer() {
       setLoading(true);
 
       const data = await GetBidsByUserId();
-      console.log(data);
+      
       setBids(data ?? []);
       setLoading(false);
     };
