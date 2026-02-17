@@ -16,7 +16,7 @@ export default function MyPageQuickStatsContainer() {
 
   const userId = user?.userId;
 
-  // Filtrera ut mina auktioner från allAuctions (ingen extra fetch)
+  
   const myAuctions: AuctionType[] = useMemo(() => {
     if (!userId) return [];
     return allAuctions.filter((a) => a.userId === userId);

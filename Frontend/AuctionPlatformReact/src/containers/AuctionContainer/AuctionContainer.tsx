@@ -5,9 +5,6 @@ import { useLocation } from "react-router";
 import { useEffect } from "react";
 
 
-
-
-
 function AuctionContainer() {
   const { auctions, reload } = useAuctions();
   const location = useLocation();
