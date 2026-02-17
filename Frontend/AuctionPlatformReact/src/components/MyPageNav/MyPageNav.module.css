@@ -1,67 +1,54 @@
-.nav {
-  background: #fff;
-  border-bottom: 1px solid #e5e5e5;
-  padding: 0.5rem 1rem;
+
+
+.navbar {
+  padding: 0.6rem 0.8rem;
 }
 
-.list {
+.container {
   display: flex;
-  gap: 1.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.link {
-  text-decoration: none;
-  color: #555;
-  font-weight: 500;
+.brand {
+  white-space: nowrap;
 }
 
-.link:hover {
-  color: #000;
+
+.rightNav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
 }
 
-.active {
-  text-decoration: none;
-  color: #000;
+
+.dropdown :global(.dropdown-toggle) {
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
   font-weight: 600;
-  border-bottom: 2px solid #0d6efd;
-  padding-bottom: 0.2rem;
 }
 
-/* Dropdown wrapper */
-.dropdown {
-  position: relative;
+
+.dropdown :global(.dropdown-menu) {
+  min-width: 240px;
 }
 
-/* Knappen ska se ut som länk */
-.dropdownBtn {
-  background: none;
-  border: none;
-  color: #555;
-  font-weight: 500;
-  font-size: inherit;
-  cursor: pointer;
-  padding: 0;
+
+.dropdown :global(.dropdown-item) {
+  padding: 0.55rem 0.9rem;
 }
 
-.dropdownBtn:hover {
-  color: #000;
+
+.dropdown :global(.dropdown-item.active),
+.dropdown :global(.dropdown-item:active) {
+  background-color: rgba(255, 255, 255, 0.12);
+  color: brown;
+  
 }
 
-/* Undermenyn */
-.submenu {
-  position: absolute;
-  top: 120%;
-  left: 0;
-  background: #fff;
-  list-style: none;
-  padding: 0.3rem 0;
-  margin: 0;
-  min-width: 170px;
 
-  border: 1px solid #e5e5e5;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-  z-index: 3000;
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.55rem 0.7rem;
+  }
 }

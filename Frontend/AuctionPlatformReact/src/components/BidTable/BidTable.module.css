@@ -1,12 +1,13 @@
 .wrapper {
   width: 100%;
-  padding: 2rem;
+  display: flex;
+  justify-content: center;
 }
 
 
 
 .table {
-  width: 100%;
+  width: 70%;
   border-collapse: collapse;
   background: rgba(20, 20, 20, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -124,6 +125,7 @@
   .table {
     border: none;
     background: transparent;
+    width: 90%;
   }
 
   .thead {

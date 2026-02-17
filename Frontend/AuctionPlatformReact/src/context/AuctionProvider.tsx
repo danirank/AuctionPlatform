@@ -23,7 +23,7 @@ interface AuctionContextType {
   setSearchTerm: (v: string) => void;
   setIncludeClosed: (v: boolean) => void;
 
-  reload: () => Promise<void>;
+  reload:  () => Promise<void>;
   loadAllAuctions: () => Promise<void>;
 
   createAuction: (values: CreateAuctionType) => Promise<AuctionType | null>;
@@ -39,7 +39,7 @@ export function AuctionProvider({ children }: { children: React.ReactNode }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [includeClosed, setIncludeClosed] = useState(false);
 
-  // Behåll din nuvarande logik för "UI-listan"
+
   const load = useCallback(async () => {
     try {
       const term = searchTerm.trim();
@@ -58,7 +58,7 @@ export function AuctionProvider({ children }: { children: React.ReactNode }) {
     }
   }, [includeClosed, searchTerm]);
 
-  // Ny: “hämta alltid ALLA auktioner” (för Min sida)
+ 
   const loadAllAuctions = useCallback(async () => {
     try {
       const result = await GetAllAuctions();
@@ -73,11 +73,10 @@ export function AuctionProvider({ children }: { children: React.ReactNode }) {
       const created = await CreateAuction(values);
       if (!created) return null;
 
-      // Uppdatera UI-listan (respekterar search/includeClosed)
+      
       await load();
 
-      // Om du redan har laddat allAuctions någon gång: håll den fräsch
-      // (valfritt men bra)
+     
       if (allAuctions.length > 0) {
         await loadAllAuctions();
       }

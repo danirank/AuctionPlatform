@@ -36,6 +36,7 @@ function UserBidContainer() {
     if (!deleted) return;
 
     setBids(prev => prev.filter(b => b.bidId !== bidId));
+    loadAllAuctions();
   };
 
   if (loading) return <p>Laddar bud...</p>;

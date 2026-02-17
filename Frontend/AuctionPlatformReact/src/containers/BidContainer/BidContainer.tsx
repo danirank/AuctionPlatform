@@ -6,18 +6,19 @@ import { useAuctions } from "../../context/AuctionProvider";
 
 interface BidContainerProps {
   auctionId: number;
+  refreshKey?: number;
 }
 
-function BidContainer({ auctionId }: BidContainerProps) {
+function BidContainer({ auctionId,refreshKey }: BidContainerProps) {
   const [bids, setBids] = useState<BidType[]>([]);
   const { allAuctions, loadAllAuctions } = useAuctions();
 
-  // ✅ Ladda alla auktioner (så highestBid finns även för stängda)
+  
   useEffect(() => {
     loadAllAuctions();
   }, [loadAllAuctions]);
 
-  // ✅ Ladda bids för aktuell auktion
+  
   useEffect(() => {
     const loadBids = async () => {
       try {
@@ -30,7 +31,7 @@ function BidContainer({ auctionId }: BidContainerProps) {
     };
 
     loadBids();
-  }, [auctionId]);
+  }, [auctionId, refreshKey]);
 
   const handleDelete = async (bidId: number, auctionId: number) => {
     const deleted = await DeleteBid({ bidId, auctionId });

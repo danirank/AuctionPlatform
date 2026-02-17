@@ -44,14 +44,14 @@ function AuctionCard({ auction}: Props) {
 
       <div onClick={(e) => e.stopPropagation()}>
 
-  {/* Admin-inaktiverad */}
+  
   {auction.isDeactivatedByAdmin && (
     <p className={style.deactivated}>
       <strong>Auktionen har inaktiverats av administratör</strong>
     </p>
   )}
 
-  {/* Lägg bud-knapp */}
+  
   {canBid && !isVisible && !auction.isDeactivatedByAdmin && (
     <PrimaryButton
       buttonEvent={toggleVisible}
@@ -59,7 +59,7 @@ function AuctionCard({ auction}: Props) {
     />
   )}
 
-  {/* AddBid-form */}
+  
   {isVisible && (
     <AddBid
       auctionId={auction.id}

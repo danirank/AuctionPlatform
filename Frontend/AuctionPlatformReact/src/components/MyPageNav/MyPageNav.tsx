@@ -6,75 +6,62 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 
+import styles from "./MyPageNav.module.css";
+
 function MyPageNav() {
   const { user } = useAuth();
-
   const isAdmin = user?.roles?.includes("Admin") ?? false;
 
   return (
-    <Navbar
-      expand="md"
-      bg="dark"
-      variant="dark"
-      className="mb-4 rounded shadow-sm"
-    >
-      <Container fluid>
-        {/* Brand */}
-        <Navbar.Brand>Mina sidor</Navbar.Brand>
+    <Navbar bg="dark" variant="dark" className={`mb-4 rounded shadow-sm ${styles.navbar}`}>
+      <Container fluid className={styles.container}>
+        <Navbar.Brand className={styles.brand}>Mina sidor</Navbar.Brand>
 
-        {/* Hamburger */}
-        <Navbar.Toggle aria-controls="mypage-nav" />
+        
+        <Nav className={styles.rightNav}>
+          <NavDropdown
+            align="end"
+            title="Meny"
+            id="mypage-menu-dropdown"
+            className={styles.dropdown}
+          >
+            <NavDropdown.Header>Mina sidor</NavDropdown.Header>
 
-        {/* Collapse */}
-        <Navbar.Collapse id="mypage-nav">
-          <Nav className="me-auto">
-
-            <Nav.Link as={NavLink} to="/mypage/auctions">
+            <NavDropdown.Item as={NavLink} to="/mypage/auctions">
               Mina auktioner
-            </Nav.Link>
+            </NavDropdown.Item>
 
-            <Nav.Link as={NavLink} to="/mypage/bids">
+            <NavDropdown.Item as={NavLink} to="/mypage/bids">
               Mina bud
-            </Nav.Link>
+            </NavDropdown.Item>
 
-            <Nav.Link as={NavLink} to="/mypage/create">
+            <NavDropdown.Item as={NavLink} to="/mypage/create">
               Skapa auktion
-            </Nav.Link>
+            </NavDropdown.Item>
 
-            {/* Inställningar */}
-            <NavDropdown title="Inställningar" id="settings-dropdown">
-              <NavDropdown.Item
-                as={NavLink}
-                to="/mypage/update-password"
-              >
-                Uppdatera lösenord
-              </NavDropdown.Item>
-            </NavDropdown>
+            <NavDropdown.Divider />
 
-            {/* Admin Dropdown */}
+            <NavDropdown.Header>Inställningar</NavDropdown.Header>
+            <NavDropdown.Item as={NavLink} to="/mypage/update-password">
+              Uppdatera lösenord
+            </NavDropdown.Item>
+
             {isAdmin && (
-              <NavDropdown
-                title="Admin"
-                id="admin-dropdown"
-              >
-                <NavDropdown.Item
-                  as={NavLink}
-                  to="/mypage/admin/users"
-                >
+              <>
+                <NavDropdown.Divider />
+                <NavDropdown.Header>Admin</NavDropdown.Header>
+
+                <NavDropdown.Item as={NavLink} to="/mypage/admin/users">
                   Användare
                 </NavDropdown.Item>
 
-                <NavDropdown.Item
-                  as={NavLink}
-                  to="/mypage/admin/auctions"
-                >
+                <NavDropdown.Item as={NavLink} to="/mypage/admin/auctions">
                   Auktioner
                 </NavDropdown.Item>
-              </NavDropdown>
+              </>
             )}
-
-          </Nav>
-        </Navbar.Collapse>
+          </NavDropdown>
+        </Nav>
       </Container>
     </Navbar>
   );

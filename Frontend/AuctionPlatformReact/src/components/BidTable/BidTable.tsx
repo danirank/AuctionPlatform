@@ -9,7 +9,11 @@ interface Props {
 }
 
 function BidTable({ bids, auctions, onDelete }: Props) {
-  const tableData = bids.map((b) => {
+  const sortedBids = [...bids].sort(
+  (a, b) => new Date(b.bidDateTime).getTime() - new Date(a.bidDateTime).getTime()
+);
+
+  const tableData = sortedBids.map((b) => {
     const auction = auctions.find((a) => Number(a.id) === Number(b.auctionId));
 
     return (

@@ -11,6 +11,8 @@ interface Props {
 }
 
 function BidRow({ bid, auction, onDelete }: Props) {
+  
+
   const navigate = useNavigate();
   const { user } = useAuth();
 
