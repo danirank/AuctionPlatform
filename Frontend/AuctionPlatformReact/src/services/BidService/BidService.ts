@@ -23,7 +23,9 @@ export async function GetBidsByUserId() {
     throw new Error(`Failed to fetch bids: ${response.status}`);
   }
 
-  return await response.json();
+  const userBids:BidType = await response.json(); 
+
+  return userBids;
 }
 
 
@@ -37,7 +39,9 @@ export async function GetHighestBidByAuctionId(
   if (res.status === 204) return null;
   if (!res.ok) return null;
 
-  return (await res.json()) as BidType;
+  const bid: BidType = await res.json(); 
+
+  return bid;
 }
 
 
@@ -65,7 +69,9 @@ export async function MakeBid(
     throw new Error((await response.text()) || "Kunde inte lägga bud");
   }
 
-  return await response.json();
+  const bid : MakeBidType = await response.json();
+
+  return bid;
 }
 
 export async function DeleteBid({bidId, auctionId}: DeleteBidType) {

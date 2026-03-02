@@ -83,8 +83,10 @@ export async function SetUserStatus({userId, isActive}: SetUserStatusType) {
       
   });
 
-  console.log(response); 
-  return response.json(); 
+  const user:UserType = await response.json(); 
+
+  console.log(user);  
+  return user; 
 
 }
 

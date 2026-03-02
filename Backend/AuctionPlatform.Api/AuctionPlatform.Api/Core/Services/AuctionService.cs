@@ -322,11 +322,9 @@ namespace AuctionPlatform.Api.Core.Services
             var responseDto = new AuctionsGetResponseDto
             {
                 Id = auction.AuctionId,
-
                 UserId = auction.UserId,
                 Title = auction.Title,
                 Description = auction.Description,
-
                 StartPrice = auction.StartPrice,
                 HighestBid = highestBidDto,
                 ImageUrl = auction.ImageUrl,

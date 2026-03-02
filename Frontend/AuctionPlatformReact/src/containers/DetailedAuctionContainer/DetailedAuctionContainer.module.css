@@ -1,8 +1,10 @@
 .container {
   display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
   gap: 20px;
   align-items: flex-start;
-  
+  margin: 2rem;
  
 }
 

@@ -6,6 +6,7 @@ import { useAuth } from "../../context/AuthProvider";
 import { getTimeLeft } from "../../helpers/timeHelpers";
 import { useNavigate } from "react-router";
 import AddBid from "../AddBid/AddBid";
+import placeholder from "../../assets/pageIcon.png";
 
 interface Props {
   auction: AuctionType;
@@ -19,7 +20,7 @@ function AuctionCard({ auction}: Props) {
   const goToAuction = () => navigate(`/auction/${auction.id}`);
   const toggleVisible = () => setIsVisible(v => !v);
   
-  
+  const imageSrc = auction.imageUrl ? auction.imageUrl : placeholder;
 
   const highestBid = auction.highestBid
     ? auction.highestBid
@@ -37,6 +38,7 @@ function AuctionCard({ auction}: Props) {
 
   return (
     <div className={style.card} onClick={goToAuction}>
+      <img src = {imageSrc} alt = "auctionBild"/>
       <h2>{auction.title}</h2>
       <p>Startpris: {auction.startPrice} kr</p>
       {hasAnyBids}

@@ -13,6 +13,7 @@ interface Props {
 
 function AuctionList({auctions}: Props) {
     
+    
 
     const list = auctions.map((auction) => {
 

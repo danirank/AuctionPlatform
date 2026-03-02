@@ -1,5 +1,5 @@
 
-import type { AuctionType, CreateAuctionType, SetAuctionStatusType, UpdateAuctionType } from "../../types/Types";
+import type { AuctionType, CreateAuctionResponse, CreateAuctionType, SetAuctionStatusType, UpdateAuctionResponse, UpdateAuctionType } from "../../types/Types";
 import { authService } from "../AuthService/AuthService";
 
 
@@ -50,8 +50,6 @@ export async function CreateAuction(auction: CreateAuctionType) {
   const url = "https://localhost:7063/api/auction";
   const token = authService.getToken();
 
-  
-  // 2) skapa auktion
   const response = await fetch(url, {
       method: "POST",
     headers: {
@@ -67,8 +65,7 @@ if (!response.ok) {
     throw new Error(`Failed to create auction: ${errorText}`);
 }
 
-const responseData = await response.json();
-console.log("CreateAuction response:", responseData);
+const responseData: CreateAuctionResponse = await response.json();
 
 return responseData;
 }
@@ -95,15 +92,13 @@ export async function UpdateAuction(
     console.error("UpdateAuction failed:", response.status, errorText);
     throw new Error(`Failed to update auction: ${errorText}`);
   }
-
-  const responseData = await response.json();
-  console.log("UpdateAuction response:", responseData);
+  const responseData: UpdateAuctionResponse = await response.json();
 
   return responseData;
 }
 
 export async function SetAuctionStatus ({auctionId, isDeactivatedByAdmin }: SetAuctionStatusType) {
-    //console.log(isDeactivatedByAdmin, "från service")
+   
     const url = `https://localhost:7063/deactivate?auctionId=${auctionId}`
   const token = authService.getToken();
   const response = await fetch(url, {
@@ -115,15 +110,14 @@ export async function SetAuctionStatus ({auctionId, isDeactivatedByAdmin }: SetA
     body: JSON.stringify({isDeactivatedByAdmin})
       
   });
-    //console.log(isDeactivatedByAdmin, "från service")
-
-
+   
  if (!response.ok) {
     const errorText = await response.text().catch(() => "");
     throw new Error(errorText || `Request failed: ${response.status}`);
   }
 
-  return await response.json();
+  const responeData : UpdateAuctionResponse = await response.json();
+  return responeData;
 }
 
 

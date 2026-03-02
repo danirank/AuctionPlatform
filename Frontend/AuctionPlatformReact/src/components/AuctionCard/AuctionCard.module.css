@@ -5,29 +5,31 @@
 
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 16px;
-  margin: 16px;
-  width: 300px;
+  padding: 0.2rem;
+  margin: 0.5rem;
+  width: 200px;
+  height: 200px;
+  font-size: 10px;
 
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   cursor: pointer;
 
-  /* Animation */
+
   transition: 
     transform 0.2s ease,
     box-shadow 0.2s ease,
     background-color 0.2s ease;
 }
 
-/* Hover */
+
 .card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   background-color: #fafafa;
 }
 
-/* Klick */
+
 .card:active {
   transform: translateY(-1px) scale(0.99);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -42,3 +44,15 @@
   margin-top: 0.5rem;
   text-align: center;
 }
+
+.card img {
+  height: 100px;
+  width: 100px;
+}
+
+.card img, h2, p {
+  margin: 0;
+  padding: 0;
+}
+
+

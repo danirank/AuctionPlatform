@@ -3,10 +3,8 @@
   margin-bottom: 1rem;
   display: flex;
   flex-wrap: wrap;
-  margin-left: 2rem;
+  padding: 2rem;
   justify-content: center;
-  
-
 }
 
 .grid {
@@ -15,7 +13,7 @@
   grid-template-columns: repeat(5, minmax(140px, 1fr));
 }
 
-/* Card */
+
 .card {
   text-align: left;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -67,7 +65,7 @@
   height: 1.1rem;
 }
 
-/* Tones (lätt accent) */
+
 .default {
   outline: none;
 }
@@ -84,7 +82,7 @@
   border-color: rgba(239, 68, 68, 0.24);
 }
 
-/* Responsive */
+
 @media (max-width: 1100px) {
   .grid {
     grid-template-columns: repeat(3, minmax(160px, 1fr));

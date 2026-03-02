@@ -29,6 +29,22 @@ export interface CreateAuctionType {
     endAtUtc: string, 
 }
 
+export interface CreateAuctionResponse {
+     auctionId: number,
+ userId: string, 
+ IsOpen: boolean
+}
+
+export interface UpdateAuctionResponse {
+  title : string,
+  userName: string,
+  description :string,
+  isOpen : boolean, 
+  startPrice :number
+ imageUrl :string   
+isDeactivatedByAdmin : boolean
+}
+
 export interface BidType {
     auctionId: number
     userId:string,
