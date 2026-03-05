@@ -46,7 +46,7 @@ namespace AuctionPlatform.Tests
                     .AddRoles<IdentityRole>()
                     .AddEntityFrameworkStores<TestIdentityDbContext>();
 
-                // (valfritt men vanligt) om du använder tokens i något flöde
+
                 services.AddLogging();
 
                 var provider = services.BuildServiceProvider();

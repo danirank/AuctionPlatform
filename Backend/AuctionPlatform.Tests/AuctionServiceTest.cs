@@ -14,7 +14,6 @@ namespace AuctionPlatform.Tests
 
         private readonly Mock<IAuctionRepo> _auctionRepoMock = new();
         private readonly Mock<IBidRepo> _bidRepoMock = new();
-
         private readonly AuctionService _sut;
 
         public AuctionServiceTest()
